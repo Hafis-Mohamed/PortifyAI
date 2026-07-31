@@ -1,0 +1,287 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PortifyAI - Create Premium Portfolios in Seconds</title>
+    <!-- FontAwesome for beautiful dev icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Premium Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <!-- Glowing Background Elements -->
+    <div class="bg-glowing-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <!-- Navigation Header -->
+    <header id="main-header">
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="#" class="logo">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>PortifyAI</span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#steps">How It Works</a></li>
+                    <li><a href="#cta">Claim Subdomain</a></li>
+                </ul>
+                <a href="/user_registration/" class="btn btn-primary">
+                    <span>Sign in</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="badge">
+                <i class="fa-solid fa-bolt"></i>
+                <span>Now Powered by Gemini 3.5</span>
+            </div>
+            <h1>
+                <span class="gradient-text">Showcase Your Code.</span><br>
+                <span class="accent-gradient-text">Let AI Do the Rest.</span>
+            </h1>
+            <p>
+                Upload your resume and watch the magic happen. Our AI generates a premium, responsive, and SEO-optimized portfolio tailor-made for your profile.
+            </p>
+            <div class="hero-ctas">
+                <a href="#cta" class="btn btn-primary">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>Upload Resume</span>
+                </a>
+                <a href="#features" class="btn btn-secondary">
+                    <span>Explore Features</span>
+                </a>
+            </div>
+
+            <!-- Dashboard Portfolio Mockup -->
+            <div class="hero-mockup-wrapper">
+                <div class="hero-mockup">
+                    <div class="window-header">
+                        <div class="window-dots">
+                            <span class="dot dot-red"></span>
+                            <span class="dot dot-yellow"></span>
+                            <span class="dot dot-green"></span>
+                        </div>
+                        <div class="window-address">yourname.portify.ai</div>
+                        <div></div>
+                    </div>
+                    <div class="window-content">
+                        <!-- Sidebar -->
+                        <div class="mock-sidebar">
+                            <div class="mock-profile">
+                                <div class="mock-avatar"></div>
+                                <div class="mock-name-skeleton">
+                                    <div class="mock-line-s"></div>
+                                    <div class="mock-line-xs"></div>
+                                </div>
+                            </div>
+                            <div class="mock-menu">
+                                <div class="mock-menu-item" style="width: 70%;"></div>
+                                <div class="mock-menu-item" style="width: 50%;"></div>
+                                <div class="mock-menu-item" style="width: 60%;"></div>
+                            </div>
+                        </div>
+                        <!-- Main Panel -->
+                        <div class="mock-main">
+                            <div class="mock-hero">
+                                <div class="mock-line-l"></div>
+                                <div class="mock-line-m"></div>
+                            </div>
+                            <div class="mock-grid">
+                                <div class="mock-card mock-card-glow">
+                                    <div class="mock-line-s"></div>
+                                    <div class="mock-line-xs"></div>
+                                </div>
+                                <div class="mock-card">
+                                    <div class="mock-line-s"></div>
+                                    <div class="mock-line-xs"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Designed for Developers</h2>
+                <p>Everything you need to showcase your developer skills, projects, and work history in a premium package.</p>
+            </div>
+            <div class="features-grid">
+                <!-- Card 1 -->
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-file-lines"></i>
+                    </div>
+                    <h3>Smart Resume Parser</h3>
+                    <p>Upload your PDF or Word resume. PortifyAI instantly extracts your experience, skills, education, and projects.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <h3>AI Tailored Sections</h3>
+                    <p>Our AI reads your profile to write compelling project summaries, match relevant skills, and format work history.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <h3>Developer-First Themes</h3>
+                    <p>Swap between beautiful themes built specifically for developers: terminal styles, minimalist cards, and dark gradients.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </div>
+                    <h3>Ultra Fast Performance</h3>
+                    <p>Perfect Lighthouse scores with static rendering and optimized media delivery. Impress recruiters instantly.</p>
+                </div>
+                <!-- Card 5 -->
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <h3>SEO & OpenGraph</h3>
+                    <p>Built-in SEO tags and automatically generated social preview cards for Slack, LinkedIn, and Twitter shares.</p>
+                </div>
+                <!-- Card 6 -->
+                <div class="feature-card glass-panel">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h3>Visitor Analytics</h3>
+                    <p>Keep track of profile views, project clicks, and resume downloads with a clean, privacy-friendly analytics panel.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Steps -->
+    <section class="steps" id="steps">
+        <div class="container">
+            <div class="section-header">
+                <h2>Build Yours in Under a Minute</h2>
+                <p>No drag-and-drop builder, no complex templates. Simple inputs, exceptional results.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-num">01</div>
+                    <h3>Upload Resume</h3>
+                    <p>Upload your standard PDF or document resume. No manual entry required.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">02</div>
+                    <h3>AI Generation</h3>
+                    <p>Our agent extracts your professional journey and designs beautiful portfolio sections.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">03</div>
+                    <h3>Publish Globally</h3>
+                    <p>Go live on your own sub-domain with one click, or link your custom domain.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call To Action Banner -->
+    <section class="cta-banner" id="cta">
+        <div class="container">
+            <div class="cta-box glass-panel">
+                <div class="cta-box-glow"></div>
+                <h2>Claim Your Developer Subdomain</h2>
+                <p>PortifyAI is currently in public preview. Secure your handle today before it is taken.</p>
+                <div class="subdomain-input-group">
+                    <input type="text" placeholder="username" id="subdomain-name">
+                    <span class="subdomain-suffix">.portify.ai</span>
+                    <button class="btn btn-primary" onclick="claimSubdomain()">
+                        <span>Claim Handle</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>PortifyAI</span>
+                    </a>
+                    <p>Creating professional portfolios for developers instantly with AI-powered generators.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#steps">How It Works</a></li>
+                        <li><a href="#cta">Claim Subdomain</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="https://github.com"><i class="fa-brands fa-github"></i> GitHub</a></li>
+                        <li><a href="https://twitter.com"><i class="fa-brands fa-x-twitter"></i> Twitter</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 PortifyAI. All rights reserved.</p>
+                <p>Designed for developers, by developers.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive JS scripts -->
+    <script>
+        // Shrink header on scroll
+        const header = document.getElementById('main-header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Simple interactive mock function
+        function claimSubdomain() {
+            const val = document.getElementById('subdomain-name').value.trim();
+            if (val) {
+                alert(`Successfully checked! "${val}.portify.ai" is available in preview!`);
+            } else {
+                alert("Please enter a username first!");
+            }
+        }
+    </script>
+</body>
+</html>
