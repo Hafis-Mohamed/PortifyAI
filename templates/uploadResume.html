@@ -1,0 +1,225 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PortifyAI - Upload Resume</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .upload-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+        .upload-card {
+            max-width: 600px;
+            width: 100%;
+            padding: 3rem;
+            text-align: center;
+        }
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--cyan);
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.4));
+        }
+        .upload-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .upload-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .file-drop-area {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.02);
+            transition: var(--transition);
+            cursor: pointer;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        .file-drop-area:hover, .file-drop-area.drag-over {
+            border-color: var(--cyan);
+            background: rgba(0, 240, 255, 0.05);
+        }
+        .file-drop-area input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 5;
+        }
+        .file-drop-icon {
+            font-size: 2.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+        }
+        .file-drop-area:hover .file-drop-icon {
+            color: var(--cyan);
+            transform: translateY(-5px);
+        }
+        .file-drop-text {
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .file-drop-hint {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .file-name-display {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 20px;
+            border-radius: 50px;
+            margin-top: 1rem;
+            color: var(--primary);
+            font-weight: 500;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .generate-btn {
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .back-link:hover {
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glowing-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <div class="upload-container">
+        <div class="upload-card glass-panel">
+            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+            <h1 class="upload-title">Upload Your Resume</h1>
+            <p class="upload-subtitle">Let PortifyAI do the heavy lifting. Upload your PDF resume to generate your stunning portfolio.</p>
+            
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="file-drop-area" id="dropArea">
+                    <i class="fa-solid fa-file-pdf file-drop-icon"></i>
+                    <p class="file-drop-text">Drag & Drop your resume here</p>
+                    <p class="file-drop-hint">or click to browse files (PDF only)</p>
+                    <input type="file" name="resume" id="resume" accept="application/pdf" required>
+                    <div class="file-name-display" id="fileNameDisplay">
+                        <i class="fa-solid fa-circle-check"></i> <span id="fileName"></span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary generate-btn">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Generate Portfolio</span>
+                </button>
+            </form>
+            <a href="{% url 'index' %}" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('resume');
+        const dropArea = document.getElementById('dropArea');
+        const fileNameDisplay = document.getElementById('fileNameDisplay');
+        const fileNameSpan = document.getElementById('fileName');
+        const dropText = document.querySelector('.file-drop-text');
+        const dropHint = document.querySelector('.file-drop-hint');
+        const dropIcon = document.querySelector('.file-drop-icon');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropArea.classList.add('drag-over');
+        }
+
+        function unhighlight(e) {
+            dropArea.classList.remove('drag-over');
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length) {
+                fileInput.files = files;
+                updateFileName();
+            }
+        }
+
+        fileInput.addEventListener('change', updateFileName);
+
+        function updateFileName() {
+            if (fileInput.files.length > 0) {
+                fileNameSpan.textContent = fileInput.files[0].name;
+                fileNameDisplay.style.display = 'inline-flex';
+                dropText.style.display = 'none';
+                dropHint.style.display = 'none';
+                dropIcon.style.display = 'none';
+            } else {
+                fileNameDisplay.style.display = 'none';
+                dropText.style.display = 'block';
+                dropHint.style.display = 'block';
+                dropIcon.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

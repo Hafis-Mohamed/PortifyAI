@@ -1,11 +1,10 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PortifyAI - Create an Account</title>
+    <title>PortifyAI - Sign In</title>
     <!-- FontAwesome for beautiful dev icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Main Premium Custom CSS -->
@@ -22,7 +21,7 @@
 
         .auth-card {
             width: 100%;
-            max-width: 480px;
+            max-width: 420px; /* Slightly narrower than registration for a cleaner look */
             padding: 3rem;
             position: relative;
             z-index: 10;
@@ -107,7 +106,6 @@
         }
     </style>
 </head>
-
 <body>
     <!-- Glowing Background Elements -->
     <div class="bg-glowing-blobs">
@@ -125,43 +123,33 @@
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
                     <span>PortifyAI</span>
                 </a>
-                <h1>Create your account</h1>
-                <p>Join thousands of developers building premium portfolios.</p>
+                <h1>Welcome back</h1>
+                <p>Sign in to your PortifyAI account.</p>
             </div>
 
             <form action="" method="post">
                 {% csrf_token %}
-
-
+                
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="john@example.com"
-                        required>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="john@example.com" required>
                 </div>
-
+                
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••"
-                        required>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
                 </div>
-
-                <div class="form-group">
-                    <label for="confirm_password">Confirm Password</label>
-                    <input type="password" id="confirm_password" name="confirm_password" class="form-control"
-                        placeholder="••••••••" required>
-                </div>
-
+                
                 <button type="submit" class="btn btn-primary auth-btn">
-                    <span>Register</span>
+                    <span>Sign In</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
 
             <div class="auth-footer">
-                <p>Already have an account? <a href="/user_login/">Sign in instead</a></p>
+                <p>Don't have an account? <a href="/user_registration/">Register here</a></p>
             </div>
         </div>
     </div>
 </body>
-
 </html>

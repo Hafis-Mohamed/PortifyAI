@@ -31,12 +31,31 @@
                 <ul class="nav-links">
                     <li><a href="#features">Features</a></li>
                     <li><a href="#steps">How It Works</a></li>
-                    <li><a href="#cta">Claim Subdomain</a></li>
                 </ul>
-                <a href="/user_registration/" class="btn btn-primary">
+                {% if user.is_authenticated %}
+                <div class="user-dropdown-container">
+                    <button type="button" class="btn btn-secondary dropdown-trigger" id="userDropdownTrigger">
+                        <i class="fa-solid fa-user" style="color: var(--cyan);"></i>
+                        <span>{{ user.first_name|default:user.username }}</span>
+                        <i class="fa-solid fa-chevron-down" id="dropdownChevron" style="font-size: 0.8rem; margin-left: 0.5rem; transition: var(--transition);"></i>
+                    </button>
+                    <div class="dropdown-menu glass-panel" id="userDropdownMenu">
+                        <a href="/upload_resume/" class="dropdown-item">
+                            <i class="fa-solid fa-address-card" style="color: var(--primary);"></i>
+                            <span>My Portfolio</span>
+                        </a>
+                        <a href="/user_logout/" class="dropdown-item">
+                            <i class="fa-solid fa-right-from-bracket" style="color: var(--primary);"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+                {% else %}
+                <a href="/user_login/" class="btn btn-primary">
                     <span>Sign in</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </a>
+                {% endif %}
                 <div class="hamburger">
                     <span></span>
                     <span></span>
@@ -61,7 +80,7 @@
                 Upload your resume and watch the magic happen. Our AI generates a premium, responsive, and SEO-optimized portfolio tailor-made for your profile.
             </p>
             <div class="hero-ctas">
-                <a href="#cta" class="btn btn-primary">
+                <a href="/upload_resume/" class="btn btn-primary">
                     <i class="fa-solid fa-file-pdf"></i>
                     <span>Upload Resume</span>
                 </a>
@@ -209,23 +228,7 @@
         </div>
     </section>
 
-    <!-- Call To Action Banner -->
-    <section class="cta-banner" id="cta">
-        <div class="container">
-            <div class="cta-box glass-panel">
-                <div class="cta-box-glow"></div>
-                <h2>Claim Your Developer Subdomain</h2>
-                <p>PortifyAI is currently in public preview. Secure your handle today before it is taken.</p>
-                <div class="subdomain-input-group">
-                    <input type="text" placeholder="username" id="subdomain-name">
-                    <span class="subdomain-suffix">.portify.ai</span>
-                    <button class="btn btn-primary" onclick="claimSubdomain()">
-                        <span>Claim Handle</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
+
 
     <!-- Footer -->
     <footer>
@@ -243,7 +246,6 @@
                     <ul>
                         <li><a href="#features">Features</a></li>
                         <li><a href="#steps">How It Works</a></li>
-                        <li><a href="#cta">Claim Subdomain</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
@@ -273,15 +275,31 @@
             }
         });
 
-        // Simple interactive mock function
-        function claimSubdomain() {
-            const val = document.getElementById('subdomain-name').value.trim();
-            if (val) {
-                alert(`Successfully checked! "${val}.portify.ai" is available in preview!`);
-            } else {
-                alert("Please enter a username first!");
-            }
+        // Dropdown toggle logic
+        const trigger = document.getElementById('userDropdownTrigger');
+        const menu = document.getElementById('userDropdownMenu');
+        const chevron = document.getElementById('dropdownChevron');
+
+        if (trigger && menu) {
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                menu.classList.toggle('show');
+                if (chevron) {
+                    chevron.style.transform = menu.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!menu.contains(e.target) && !trigger.contains(e.target)) {
+                    menu.classList.remove('show');
+                    if (chevron) {
+                        chevron.style.transform = 'rotate(0deg)';
+                    }
+                }
+            });
         }
+
+
     </script>
 </body>
 </html>

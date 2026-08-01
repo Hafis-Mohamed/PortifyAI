@@ -1,0 +1,194 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PortifyAI - Review Details</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .review-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+        .review-card {
+            max-width: 800px;
+            width: 100%;
+            padding: 3rem;
+        }
+        .review-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .review-icon {
+            font-size: 3.5rem;
+            color: var(--cyan);
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.4));
+        }
+        .review-title {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .review-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--cyan);
+            background: rgba(0, 240, 255, 0.05);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+        }
+        
+        .form-control:focus + i, .form-control:not(:placeholder-shown) + i {
+            color: var(--cyan);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glowing-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <div class="review-container">
+        <div class="review-card glass-panel">
+            <div class="review-header">
+                <i class="fa-solid fa-user-check review-icon"></i>
+                <h1 class="review-title">Review Your Details</h1>
+                <p class="review-subtitle">Our AI has successfully extracted your information. Please verify and edit any details below.</p>
+            </div>
+            
+            <form action="{% url 'editDetails' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <!-- Full Name -->
+                    <div class="form-group full-width">
+                        <label for="name">Full Name</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="name" id="name" value="{{ name|default_if_none:'' }}" placeholder="John Doe" required>
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-group">
+                            <input type="email" class="form-control" name="email" id="email" value="{{ email|default_if_none:'' }}" placeholder="john@example.com" required>
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Phone -->
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="phone" id="phone" value="{{ phone|default_if_none:'' }}" placeholder="+1 234 567 8900">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- LinkedIn -->
+                    <div class="form-group">
+                        <label for="linkedin">LinkedIn Profile URL</label>
+                        <div class="input-group">
+                            <input type="url" class="form-control" name="linkedin" id="linkedin" value="{{ linkedin|default_if_none:'' }}" placeholder="https://linkedin.com/in/johndoe">
+                            <i class="fa-brands fa-linkedin"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- GitHub -->
+                    <div class="form-group">
+                        <label for="github">GitHub Profile URL</label>
+                        <div class="input-group">
+                            <input type="url" class="form-control" name="github" id="github" value="{{ github|default_if_none:'' }}" placeholder="https://github.com/johndoe">
+                            <i class="fa-brands fa-github"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary submit-btn">
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span>Confirm & Generate Dashboard</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
