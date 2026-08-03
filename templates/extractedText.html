@@ -181,6 +181,16 @@
                             <i class="fa-brands fa-github"></i>
                         </div>
                     </div>
+                    
+                    <!-- Education -->
+                    <div class="form-group full-width">
+                        <label for="education">Education</label>
+                        <div class="input-group">
+                            <textarea class="form-control" name="education" id="education" rows="5" placeholder="Your education details...">{% for item in education %}{{ item }}{% if not forloop.last %}
+{% endif %}{% endfor %}</textarea>
+                            <i class="fa-solid fa-graduation-cap" style="top: 1.5rem; transform: none;"></i>
+                        </div>
+                    </div>
                 </div>
                 
                 <button type="submit" class="btn btn-primary submit-btn">

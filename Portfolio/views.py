@@ -16,19 +16,29 @@ def uploadResume(request):
         resume=request.FILES["resume"]
         user=request.user
         resume_obj=Resume.objects.create(user=user,resume=resume)
-        text = extractText(resume_obj.resume.path)
+        text=extractText(resume_obj.resume.path)
+
+        resume_score = calculateResumeScore(text)
+        if resume_score < 55:
+            resume_obj.delete()
+            messages.error(request, f"The uploaded document does not appear to be a valid resume. Please upload a proper resume file.")
+            return redirect("uploadResume")
+
         email=extractEmail(text)
         phone=extractPhone(text)
         linkedin=extractLinkedIn(text)
         github=extractGithub(text)
         name=extractName(text)
+        education=extractEducation(text)
+
         # Store extracted data in session to pass to the next view
         request.session['extracted_details'] = {
             "email": email,
             "phone": phone,
             "linkedin": linkedin,
             "github": github,
-            "name": name
+            "name": name,
+            "education":education
         }
         return redirect("fetchingDetails")        
     return render(request,"uploadResume.html")

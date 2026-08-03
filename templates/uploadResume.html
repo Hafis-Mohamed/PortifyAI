@@ -122,6 +122,23 @@
         .back-link:hover {
             color: var(--primary);
         }
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            text-align: center;
+        }
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -137,6 +154,16 @@
             <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
             <h1 class="upload-title">Upload Your Resume</h1>
             <p class="upload-subtitle">Let PortifyAI do the heavy lifting. Upload your PDF resume to generate your stunning portfolio.</p>
+            
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
             
             <form action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}

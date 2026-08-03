@@ -68,3 +68,80 @@ def extractName(text):
                 return line
     return None
 
+
+EDUCATION_HEADINGS = [
+    "education",
+    "academic qualification",
+    "academic qualifications",
+    "qualification",
+    "qualifications",
+    "education & qualifications"
+]
+NEXT_HEADINGS = [
+    "skills",
+    "projects",
+    "experience",
+    "work experience",
+    "internship",
+    "certifications",
+    "achievements",
+    "languages",
+    "interests",
+    "profile",
+    "summary",
+    "contact"
+]
+def extractEducation(text):
+    lines = text.split("\n")
+
+    education = []
+    capture = False
+
+    for line in lines:
+        line = line.strip()
+
+        if not line:
+            continue
+
+        lower = line.lower()
+
+        if any(h == lower for h in EDUCATION_HEADINGS):
+            capture = True
+            continue
+
+        if capture:
+            if any(h == lower for h in NEXT_HEADINGS):
+                break
+
+            education.append(line)
+
+    return education
+
+
+def calculateResumeScore(text):
+    score = 0
+    text_lower = text.lower()
+
+    if extractEmail(text):
+        score += 20
+    if extractPhone(text):
+        score += 20
+
+    if extractLinkedIn(text):
+        score += 10
+    if extractGithub(text):
+        score += 10
+
+    education_keywords = ["education", "academic", "university", "college", "degree", "bachelor", "master", "cgpa", "gpa"]
+    if any(keyword in text_lower for keyword in education_keywords):
+        score += 15
+
+    experience_keywords = ["experience", "work", "employment", "internship", "role"]
+    if any(keyword in text_lower for keyword in experience_keywords):
+        score += 15
+
+    skills_keywords = ["skills", "technologies", "tools", "projects", "certifications", "portfolio"]
+    if any(keyword in text_lower for keyword in skills_keywords):
+        score += 10
+
+    return min(score, 100)
