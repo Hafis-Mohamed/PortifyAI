@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ portfolio.name }} | Editorial Portfolio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #FAF7F0;
+            --text-main: #1C1917;
+            --text-muted: #44403C;
+            --accent: #6B1F2A; /* Elegant Maroon */
+            --accent-navy: #1A2B4A; /* Deep Navy */
+            --border-color: #E7E5E4;
+            --border-dark: #1C1917;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lora', Georgia, serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 4rem;
+        }
+
+        /* Preview Bar */
+        .preview-bar {
+            background: #1C1917;
+            color: #FAF7F0;
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            font-family: sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .preview-bar h3 {
+            font-weight: 500;
+            color: #FAF7F0;
+        }
+
+        .preview-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .preview-actions form {
+            display: inline;
+        }
+
+        .btn {
+            padding: 0.4rem 1.2rem;
+            border-radius: 2px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(250, 247, 240, 0.3);
+            color: #FAF7F0;
+        }
+
+        .btn-outline:hover {
+            border-color: #FAF7F0;
+            background: rgba(250, 247, 240, 0.05);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #50161F;
+        }
+
+        /* Main Editorial Sheet */
+        .editorial-wrapper {
+            max-width: 950px;
+            margin: 3rem auto;
+            padding: 4rem;
+            background-color: #FAF7F0;
+            box-shadow: 0 0 1px rgba(0,0,0,0.1), 0 4px 20px rgba(0,0,0,0.02);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        /* Centered Header */
+        header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .role-tagline {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+        }
+
+        .meta-line {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .meta-line a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .meta-line a:hover {
+            color: var(--accent);
+        }
+
+        .header-divider {
+            border: none;
+            height: 1px;
+            background-color: var(--border-dark);
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Pull Quote Summary */
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            font-style: italic;
+            line-height: 1.8;
+            color: var(--accent-navy);
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem auto;
+            position: relative;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .pull-quote::before {
+            content: "“";
+            font-size: 4rem;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--border-color);
+            line-height: 1;
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Two Column Grid */
+        .editorial-grid {
+            display: flex;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .column-left {
+            width: 35%;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .column-right {
+            width: 65%;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-navy);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid var(--border-dark);
+            padding-bottom: 0.3rem;
+        }
+
+        /* Editorial List elements */
+        .editorial-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .editorial-item {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .editorial-item h4 {
+            font-family: 'Lora', Georgia, serif;
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.98rem;
+            line-height: 1.4;
+        }
+
+        .editorial-item-meta {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin: 0.1rem 0 0.3rem 0;
+        }
+
+        /* Bibliography / Hanging Indents styling for Experience/Publications */
+        .biblio-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2.2rem;
+        }
+
+        .biblio-entry {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .biblio-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.2rem;
+        }
+
+        .biblio-meta {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-family: sans-serif;
+        }
+
+        .biblio-desc {
+            line-height: 1.7;
+            white-space: pre-line;
+        }
+
+        /* Selected Works (Projects) */
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .project-item {
+            font-size: 0.95rem;
+        }
+
+        .project-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.2rem;
+            display: inline-block;
+            border-bottom: 1px solid var(--border-dark);
+            padding-bottom: 1px;
+        }
+
+        .project-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .project-desc {
+            color: var(--text-muted);
+            margin-top: 0.4rem;
+        }
+
+        /* Footer sections */
+        .footer-grid {
+            border-top: 1px solid var(--border-dark);
+            padding-top: 3rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-section h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-navy);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-section-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            font-size: 0.92rem;
+            color: var(--text-muted);
+        }
+
+        /* Print formatting styles */
+        @media print {
+            body {
+                background-color: #FFFFFF;
+                color: #000000;
+            }
+            .editorial-wrapper {
+                box-shadow: none;
+                border: none;
+                margin: 0;
+                padding: 0;
+                max-width: 100%;
+            }
+            .preview-bar {
+                display: none !important;
+            }
+        }
+
+        /* Mobile styling */
+        @media (max-width: 768px) {
+            .editorial-wrapper {
+                padding: 1.5rem;
+                margin: 0;
+                border: none;
+            }
+            .editorial-grid {
+                flex-direction: column;
+                gap: 3rem;
+            }
+            .column-left, .column-right {
+                width: 100%;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            header h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% if not is_export %}
+    <div class="preview-bar">
+        <h3>Preview: Editorial Classic</h3>
+        <div class="preview-actions">
+            <a href="{% url 'chooseTemplate' %}" class="btn btn-outline">Back to Templates</a>
+            <a href="{% url 'downloadPortfolioZip' 'template4' %}" class="btn btn-outline"><i class="fa-solid fa-download"></i> Download ZIP</a>
+            <form action="{% url 'saveTemplateChoice' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="template_id" value="template4">
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Publish Portfolio</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="editorial-wrapper">
+        <!-- Header -->
+        <header>
+            <h1>{{ portfolio.name }}</h1>
+            <div class="role-tagline">{{ portfolio.role }}</div>
+            
+            <div class="meta-line">
+                {% if portfolio.location %}<span>{{ portfolio.location }}</span>{% endif %}
+                {% if portfolio.email %}<a href="mailto:{{ portfolio.email }}">{{ portfolio.email }}</a>{% endif %}
+                {% if portfolio.phone %}<a href="tel:{{ portfolio.phone }}">{{ portfolio.phone }}</a>{% endif %}
+                {% if portfolio.github %}<a href="{{ portfolio.github }}" target="_blank">GitHub</a>{% endif %}
+                {% if portfolio.linkedin %}<a href="{{ portfolio.linkedin }}" target="_blank">LinkedIn</a>{% endif %}
+            </div>
+            
+            <hr class="header-divider">
+        </header>
+
+        <!-- Summary -->
+        {% if portfolio.summary %}
+        <div class="pull-quote">
+            {{ portfolio.summary }}
+        </div>
+        {% endif %}
+
+        <!-- Two Column Grid -->
+        <div class="editorial-grid">
+            
+            <!-- Left Column (Narrower) -->
+            <div class="column-left">
+                <!-- Education -->
+                {% if portfolio.education %}
+                <section>
+                    <h3 class="section-title">Education</h3>
+                    <div class="editorial-list">
+                        {% for edu in portfolio.education %}
+                        <div class="editorial-item">
+                            <h4>{{ edu.heading|default:edu }}</h4>
+                            {% if edu.body %}
+                            <div class="editorial-item-meta">{{ edu.body }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- Certifications -->
+                {% if portfolio.certifications %}
+                <section>
+                    <h3 class="section-title">Certifications</h3>
+                    <div class="editorial-list">
+                        {% for cert in portfolio.certifications %}
+                        <div class="editorial-item">
+                            {% if cert.heading %}
+                            <h4>{{ cert.heading }}</h4>
+                            {% if cert.body %}<div class="editorial-item-meta">{{ cert.body }}</div>{% endif %}
+                            {% else %}
+                            <h4>{{ cert }}</h4>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- Languages -->
+                {% if portfolio.languages %}
+                <section>
+                    <h3 class="section-title">Languages</h3>
+                    <div class="editorial-list">
+                        {% for lang in portfolio.languages %}
+                        <div class="editorial-item">
+                            <h4>{{ lang.name }}</h4>
+                            {% if lang.proficiency %}
+                            <div class="editorial-item-meta">{{ lang.proficiency }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- Interests -->
+                {% if portfolio.interests %}
+                <section>
+                    <h3 class="section-title">Interests</h3>
+                    <div class="editorial-list">
+                        {% for interest in portfolio.interests %}
+                        <div class="editorial-item">
+                            <h4>{{ interest }}</h4>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+            </div>
+
+            <!-- Right Column (Wider) -->
+            <div class="column-right">
+                <!-- Experience -->
+                {% if portfolio.experience %}
+                <section>
+                    <h3 class="section-title">Experience</h3>
+                    <div class="biblio-list">
+                        {% for exp in portfolio.experience %}
+                        <div class="biblio-entry">
+                            <h4 class="biblio-title">{{ exp.heading|default:exp }}</h4>
+                            {% if exp.body %}
+                            <div class="biblio-desc">{{ exp.body }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- Publications -->
+                {% if portfolio.publications %}
+                <section style="margin-top: 1rem;">
+                    <h3 class="section-title">Publications</h3>
+                    <div class="biblio-list">
+                        {% for pub in portfolio.publications %}
+                        <div class="biblio-entry">
+                            <div class="biblio-desc" style="text-indent: -1.5rem; padding-left: 1.5rem;">
+                                {{ pub }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- Selected Works (Projects) -->
+        {% if portfolio.projects %}
+        <section style="margin-bottom: 4rem;">
+            <h3 class="section-title">Selected Works</h3>
+            <div class="projects-list">
+                {% for project in portfolio.projects %}
+                <div class="project-item">
+                    <span class="project-title">{{ project.heading|default:project }}</span>
+                    {% if project.body %}
+                    <div class="project-desc">{{ project.body }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Footer Grid for Volunteer and Achievements -->
+        <div class="footer-grid">
+            <!-- Achievements -->
+            <div class="footer-section">
+                <h3>Achievements</h3>
+                <div class="footer-section-list">
+                    {% if portfolio.achievements %}
+                    {% for ach in portfolio.achievements %}
+                    <div>• {{ ach }}</div>
+                    {% endfor %}
+                    {% else %}
+                    <div style="font-style: italic;">No achievements listed.</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Volunteer -->
+            <div class="footer-section">
+                <h3>Volunteer Work</h3>
+                <div class="footer-section-list">
+                    {% if portfolio.volunteer %}
+                    {% for vol in portfolio.volunteer %}
+                    <div>• {{ vol }}</div>
+                    {% endfor %}
+                    {% else %}
+                    <div style="font-style: italic;">No volunteer work listed.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

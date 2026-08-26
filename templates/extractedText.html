@@ -42,6 +42,7 @@
             margin-bottom: 0.5rem;
             background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         .review-subtitle {
@@ -116,6 +117,39 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Custom Scrollbar */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: rgba(0, 240, 255, 0.2);
+            border-radius: 8px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 240, 255, 0.4);
+        }
+
+        /* Proficiency Dropdown */
+        .proficiency-select {
+            padding-left: 1rem !important; /* No icon on the left, so less padding */
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f0ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+        .proficiency-select option {
+            background-color: #1a1a2e; /* Dark background for options to match theme */
+            color: #fff;
+            padding: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -145,7 +179,25 @@
                             <i class="fa-solid fa-user"></i>
                         </div>
                     </div>
+
+                    <!-- Role -->
+                    <div class="form-group full-width">
+                        <label for="role">Professional Role</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="role" id="role" value="{{ role|default_if_none:'' }}" placeholder="Software Engineer" required>
+                            <i class="fa-solid fa-briefcase"></i>
+                        </div>
+                    </div>
                     
+                    <!-- Location -->
+                    <div class="form-group full-width">
+                        <label for="location">Location</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="location" id="location" value="{{ location|default_if_none:'' }}" placeholder="New York, NY">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                    </div>
+
                     <!-- Email -->
                     <div class="form-group">
                         <label for="email">Email Address</label>
@@ -184,12 +236,212 @@
                     
                     <!-- Education -->
                     <div class="form-group full-width">
-                        <label for="education">Education</label>
-                        <div class="input-group">
-                            <textarea class="form-control" name="education" id="education" rows="5" placeholder="Your education details...">{% for item in education %}{{ item }}{% if not forloop.last %}
-{% endif %}{% endfor %}</textarea>
-                            <i class="fa-solid fa-graduation-cap" style="top: 1.5rem; transform: none;"></i>
+                        <label>Education</label>
+                        <div id="education-container">
+                            {% for item in education %}
+                            <div class="dynamic-row" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="input-group" style="flex: 1;">
+                                    <textarea class="form-control" name="education[]" rows="4" placeholder="Your education details...">{{ item.details|default:item }}</textarea>
+                                    <i class="fa-solid fa-graduation-cap" style="top: 1.5rem; transform: none;"></i>
+                                </div>
+                                <button type="button" class="btn" style="background: rgba(255, 50, 50, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 50, 50, 0.3); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; height: fit-content; align-self: flex-start;" onclick="this.parentElement.remove()" title="Remove"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            {% endfor %}
                         </div>
+                        <button type="button" class="btn add-row-btn" data-target="education-container" data-icon="fa-graduation-cap" data-placeholder="Your education details..." data-name="education[]" style="background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; font-size: 0.9rem; margin-top: 0.5rem; width: fit-content;">
+                            <i class="fa-solid fa-plus"></i> Add Education
+                        </button>
+                    </div>
+
+                    <!-- Experience -->
+                    <div class="form-group full-width">
+                        <label>Work Experience</label>
+                        <div id="experience-container">
+                            {% for item in experience %}
+                            <div class="dynamic-row" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="input-group" style="flex: 1;">
+                                    <textarea class="form-control" name="experience[]" rows="4" placeholder="Your work experience...">{{ item }}</textarea>
+                                    <i class="fa-solid fa-building" style="top: 1.5rem; transform: none;"></i>
+                                </div>
+                                <button type="button" class="btn" style="background: rgba(255, 50, 50, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 50, 50, 0.3); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; height: fit-content; align-self: flex-start;" onclick="this.parentElement.remove()" title="Remove"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn add-row-btn" data-target="experience-container" data-icon="fa-building" data-placeholder="Your work experience..." data-name="experience[]" style="background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; font-size: 0.9rem; margin-top: 0.5rem; width: fit-content;">
+                            <i class="fa-solid fa-plus"></i> Add Experience
+                        </button>
+                    </div>
+
+                    <!-- Projects -->
+                    <div class="form-group full-width">
+                        <label>Projects</label>
+                        <div id="projects-container">
+                            {% for item in projects %}
+                            <div class="dynamic-row" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="input-group" style="flex: 1;">
+                                    <textarea class="form-control" name="projects[]" rows="4" placeholder="Your projects...">{{ item }}</textarea>
+                                    <i class="fa-solid fa-folder-open" style="top: 1.5rem; transform: none;"></i>
+                                </div>
+                                <button type="button" class="btn btn-outline-danger remove-row-btn" style="padding: 0.5rem 1rem; height: fit-content; align-self: flex-start;" title="Remove"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn add-row-btn" data-target="projects-container" data-icon="fa-folder-open" data-placeholder="Your projects..." data-name="projects[]" style="background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; font-size: 0.9rem; margin-top: 0.5rem; width: fit-content;">
+                            <i class="fa-solid fa-plus"></i> Add Project
+                        </button>
+                    </div>
+
+                    <!-- Certifications -->
+                    <div class="form-group full-width">
+                        <label>Certifications</label>
+                        <div id="certifications-container">
+                            {% for item in certifications %}
+                            <div class="dynamic-row" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="input-group" style="flex: 1;">
+                                    <textarea class="form-control" name="certifications[]" rows="3" placeholder="Your certifications...">{{ item }}</textarea>
+                                    <i class="fa-solid fa-certificate" style="top: 1.5rem; transform: none;"></i>
+                                </div>
+                                <button type="button" class="btn btn-outline-danger remove-row-btn" style="padding: 0.5rem 1rem; height: fit-content; align-self: flex-start;" title="Remove"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn add-row-btn" data-target="certifications-container" data-icon="fa-certificate" data-placeholder="Your certifications..." data-name="certifications[]" style="background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; font-size: 0.9rem; margin-top: 0.5rem; width: fit-content;">
+                            <i class="fa-solid fa-plus"></i> Add Certification
+                        </button>
+                    </div>
+
+                    <!-- Achievements & Awards -->
+                    <div class="form-group full-width">
+                        <label>Achievements & Awards</label>
+                        <div id="achievements-container">
+                            {% for item in achievements %}
+                            <div class="dynamic-row" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="input-group" style="flex: 1;">
+                                    <textarea class="form-control" name="achievements[]" rows="4" placeholder="Your achievements...">{{ item }}</textarea>
+                                    <i class="fa-solid fa-trophy" style="top: 1.5rem; transform: none;"></i>
+                                </div>
+                                <button type="button" class="btn" style="background: rgba(255, 50, 50, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 50, 50, 0.3); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; height: fit-content; align-self: flex-start;" onclick="this.parentElement.remove()" title="Remove"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn add-row-btn" data-target="achievements-container" data-icon="fa-trophy" data-placeholder="Your achievements..." data-name="achievements[]" style="background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; font-size: 0.9rem; margin-top: 0.5rem; width: fit-content;">
+                            <i class="fa-solid fa-plus"></i> Add Achievement
+                        </button>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="form-group full-width">
+                        <label>Skills</label>
+                        <div id="skills-container">
+                            {% for item in skills %}
+                            <div class="dynamic-row" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="input-group" style="flex: 1;">
+                                    <textarea class="form-control" name="skills[]" rows="5" placeholder="Your skills...">{{ item }}</textarea>
+                                    <i class="fa-solid fa-code" style="top: 1.5rem; transform: none;"></i>
+                                </div>
+                                <button type="button" class="btn" style="background: rgba(255, 50, 50, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 50, 50, 0.3); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; height: fit-content; align-self: flex-start;" onclick="this.parentElement.remove()" title="Remove"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn add-row-btn" data-target="skills-container" data-icon="fa-code" data-placeholder="Your skills..." data-name="skills[]" style="background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; font-size: 0.9rem; margin-top: 0.5rem; width: fit-content;">
+                            <i class="fa-solid fa-plus"></i> Add Skill
+                        </button>
+                    </div>
+
+                    <!-- Interests & Hobbies -->
+                    <div class="form-group full-width">
+                        <label>Interests & Hobbies</label>
+                        <div id="interests-container">
+                            {% for item in interests %}
+                            <div class="dynamic-row" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="input-group" style="flex: 1;">
+                                    <textarea class="form-control" name="interests[]" rows="3" placeholder="Your interests and hobbies...">{{ item }}</textarea>
+                                    <i class="fa-solid fa-heart" style="top: 1.5rem; transform: none;"></i>
+                                </div>
+                                <button type="button" class="btn" style="background: rgba(255, 50, 50, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 50, 50, 0.3); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; height: fit-content; align-self: flex-start;" onclick="this.parentElement.remove()" title="Remove"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn add-row-btn" data-target="interests-container" data-icon="fa-heart" data-placeholder="Your interests and hobbies..." data-name="interests[]" style="background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; font-size: 0.9rem; margin-top: 0.5rem; width: fit-content;">
+                            <i class="fa-solid fa-plus"></i> Add Interest
+                        </button>
+                    </div>
+
+                    <!-- Publications & Research -->
+                    <div class="form-group full-width">
+                        <label>Publications & Research</label>
+                        <div id="publications-container">
+                            {% for item in publications %}
+                            <div class="dynamic-row" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="input-group" style="flex: 1;">
+                                    <textarea class="form-control" name="publications[]" rows="4" placeholder="Your publications or research papers...">{{ item }}</textarea>
+                                    <i class="fa-solid fa-book-open" style="top: 1.5rem; transform: none;"></i>
+                                </div>
+                                <button type="button" class="btn" style="background: rgba(255, 50, 50, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 50, 50, 0.3); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; height: fit-content; align-self: flex-start;" onclick="this.parentElement.remove()" title="Remove"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn add-row-btn" data-target="publications-container" data-icon="fa-book-open" data-placeholder="Your publications or research papers..." data-name="publications[]" style="background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; font-size: 0.9rem; margin-top: 0.5rem; width: fit-content;">
+                            <i class="fa-solid fa-plus"></i> Add Publication
+                        </button>
+                    </div>
+
+                    <!-- Volunteer Experience -->
+                    <div class="form-group full-width">
+                        <label>Volunteer Experience</label>
+                        <div id="volunteer-container">
+                            {% for item in volunteer %}
+                            <div class="dynamic-row" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="input-group" style="flex: 1;">
+                                    <textarea class="form-control" name="volunteer[]" rows="4" placeholder="Your volunteer or community service experience...">{{ item }}</textarea>
+                                    <i class="fa-solid fa-handshake-angle" style="top: 1.5rem; transform: none;"></i>
+                                </div>
+                                <button type="button" class="btn" style="background: rgba(255, 50, 50, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 50, 50, 0.3); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; height: fit-content; align-self: flex-start;" onclick="this.parentElement.remove()" title="Remove"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn add-row-btn" data-target="volunteer-container" data-icon="fa-handshake-angle" data-placeholder="Your volunteer or community service experience..." data-name="volunteer[]" style="background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; font-size: 0.9rem; margin-top: 0.5rem; width: fit-content;">
+                            <i class="fa-solid fa-plus"></i> Add Volunteer Experience
+                        </button>
+                    </div>
+
+                    <!-- Other Links -->
+                    <div class="form-group full-width">
+                        <label for="other_links">Other Links (Blogs, etc.)</label>
+                        <div class="input-group">
+                            <textarea class="form-control" name="other_links" id="other_links" rows="3" placeholder="https://yourwebsite.com&#10;https://medium.com/@you">{{ other_links|default_if_none:'' }}</textarea>
+                            <i class="fa-solid fa-link" style="top: 1.5rem; transform: none;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Languages -->
+                    <div class="form-group full-width">
+                        <label>Languages</label>
+                        <div id="languages-container">
+                            {% for lang in languages %}
+                            <div class="language-entry" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                                <div class="input-group" style="flex: 1;">
+                                    <input type="text" class="form-control" name="language_name[]" value="{{ lang }}" placeholder="e.g. English">
+                                    <i class="fa-solid fa-language"></i>
+                                </div>
+                                <div class="input-group" style="flex: 1;">
+                                    <select class="form-control proficiency-select" name="language_proficiency[]">
+                                        <option value="Beginner">Beginner</option>
+                                        <option value="Intermediate">Intermediate</option>
+                                        <option value="Advanced">Advanced</option>
+                                        <option value="Fluent" selected>Fluent</option>
+                                        <option value="Native">Native</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn" style="background: rgba(255, 50, 50, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 50, 50, 0.3); padding: 0 1rem; border-radius: 12px; cursor: pointer;" onclick="this.parentElement.remove()">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn" style="background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid rgba(255, 255, 255, 0.1); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; font-size: 0.9rem;" onclick="addLanguage()">
+                            <i class="fa-solid fa-plus"></i> Add Language
+                        </button>
                     </div>
                 </div>
                 
@@ -200,5 +452,58 @@
             </form>
         </div>
     </div>
+    <script>
+        function addLanguage() {
+            const container = document.getElementById('languages-container');
+            const entry = document.createElement('div');
+            entry.className = 'language-entry';
+            entry.style.cssText = 'display: flex; gap: 1rem; margin-bottom: 1rem;';
+            entry.innerHTML = `
+                <div class="input-group" style="flex: 1;">
+                    <input type="text" class="form-control" name="language_name[]" placeholder="e.g. Spanish">
+                    <i class="fa-solid fa-language"></i>
+                </div>
+                <div class="input-group" style="flex: 1;">
+                    <select class="form-control proficiency-select" name="language_proficiency[]">
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                        <option value="Fluent" selected>Fluent</option>
+                        <option value="Native">Native</option>
+                    </select>
+                </div>
+                <button type="button" class="btn" style="background: rgba(255, 50, 50, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 50, 50, 0.3); padding: 0 1rem; border-radius: 12px; cursor: pointer;" onclick="this.parentElement.remove()">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(entry);
+        }
+
+        document.querySelectorAll('.add-row-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const iconClass = this.getAttribute('data-icon');
+                const placeholder = this.getAttribute('data-placeholder');
+                const inputName = this.getAttribute('data-name');
+                const container = document.getElementById(targetId);
+                
+                const row = document.createElement('div');
+                row.className = 'dynamic-row';
+                row.style.cssText = 'display: flex; gap: 1rem; margin-bottom: 1rem;';
+                
+                row.innerHTML = `
+                    <div class="input-group" style="flex: 1;">
+                        <textarea class="form-control" name="${inputName}" rows="4" placeholder="${placeholder}"></textarea>
+                        <i class="fa-solid ${iconClass}" style="top: 1.5rem; transform: none;"></i>
+                    </div>
+                    <button type="button" class="btn" style="background: rgba(255, 50, 50, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 50, 50, 0.3); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; height: fit-content; align-self: flex-start;" onclick="this.parentElement.remove()" title="Remove">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                `;
+                
+                container.appendChild(row);
+            });
+        });
+    </script>
 </body>
 </html>

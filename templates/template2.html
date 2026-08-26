@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ portfolio.name }} | Portfolio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0D0D0D;
+            --card-bg: rgba(25, 25, 25, 0.75);
+            --text-main: #FFFFFF;
+            --text-muted: #A3A3A3;
+            --gradient-start: #8B5CF6;
+            --gradient-mid: #EC4899;
+            --gradient-end: #F59E0B;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Preview Bar */
+        .preview-bar {
+            background: rgba(13, 13, 13, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .preview-bar h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-mid));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .preview-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .preview-actions form {
+            display: inline;
+        }
+
+        .btn {
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: 0.25s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--gradient-mid);
+            background: rgba(236, 72, 153, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid));
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+        }
+
+        /* Full Width Hero */
+        .hero {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            background: radial-gradient(circle at 50% 30%, rgba(139, 92, 246, 0.15) 0%, rgba(13, 13, 13, 0) 60%),
+                        radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, rgba(13, 13, 13, 0) 50%);
+        }
+
+        .hero h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #FFFFFF 20%, var(--gradient-start) 50%, var(--gradient-mid) 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -2px;
+        }
+
+        .hero h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 2rem;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Section Reveal Class */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8rem;
+        }
+
+        .section-header {
+            margin-bottom: 3.5rem;
+            text-align: center;
+        }
+
+        .section-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            display: inline-block;
+            background: linear-gradient(to right, #FFF, var(--text-muted));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        /* Skill Pills Horizontal scroll (custom flex-wrap fallback or nice scroller) */
+        .skills-scroller {
+            width: 100vw;
+            margin-left: -50vw;
+            left: 50%;
+            position: relative;
+            overflow-x: auto;
+            padding: 1rem 0;
+            display: flex;
+            gap: 1.5rem;
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        .skills-scroller::-webkit-scrollbar {
+            display: none; /* Safari/Chrome */
+        }
+
+        .skills-inner {
+            display: flex;
+            gap: 1rem;
+            padding: 0 2rem;
+            margin: 0 auto;
+        }
+
+        .skill-pill {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transition: border-color 0.3s;
+        }
+
+        .skill-pill:hover {
+            border-color: var(--gradient-mid);
+        }
+
+        .skill-pill i {
+            color: var(--gradient-mid);
+        }
+
+        /* Project Masonry Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-mid));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-card h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .project-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            flex-grow: 1;
+        }
+
+        .project-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gradient-mid);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .project-link:hover {
+            color: var(--gradient-end);
+        }
+
+        /* Alternating Timeline for Experience */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background: var(--border-color);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -1px;
+        }
+
+        .timeline-container {
+            padding: 10px 40px;
+            position: relative;
+            background-color: inherit;
+            width: 50%;
+        }
+
+        .timeline-container::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            right: -8px;
+            background-color: var(--gradient-mid);
+            border: 4px solid var(--bg-color);
+            top: 25px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .left {
+            left: 0;
+        }
+
+        .right {
+            left: 50%;
+        }
+
+        .right::after {
+            left: -8px;
+        }
+
+        .timeline-content {
+            padding: 1.5rem 2rem;
+            background: var(--card-bg);
+            position: relative;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline-content h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-content p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            white-space: pre-line;
+        }
+
+        /* Standard Cards Grid for Education/Certifications */
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .simple-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 16px;
+        }
+
+        .simple-card h3 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .simple-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Lists for Achievements/Publications/Volunteer */
+        .vertical-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .list-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .list-card i {
+            font-size: 1.5rem;
+            color: var(--gradient-mid);
+        }
+
+        .list-card-content p {
+            font-size: 0.98rem;
+        }
+
+        /* Floating Contact Card */
+        .floating-contact {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(25, 25, 25, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 999;
+            transition: all 0.3s;
+        }
+
+        .floating-contact:hover {
+            border-color: var(--gradient-mid);
+            transform: translateY(-2px);
+        }
+
+        .floating-icon {
+            color: var(--text-main);
+            font-size: 1.2rem;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        .floating-icon:hover {
+            color: var(--gradient-mid);
+        }
+
+        /* Footer Info */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 4rem 2rem;
+            background: rgba(10, 10, 10, 0.5);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .footer-chips {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer-chip {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-chip i {
+            color: var(--gradient-start);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .timeline::after {
+                left: 31px;
+            }
+            .timeline-container {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-container::after {
+                left: 23px;
+            }
+            .right {
+                left: 0%;
+            }
+            .floating-contact {
+                bottom: 1rem;
+                right: 1rem;
+                padding: 0.8rem 1rem;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% if not is_export %}
+    <div class="preview-bar">
+        <h3>Preview: Bold Gradient</h3>
+        <div class="preview-actions">
+            <a href="{% url 'chooseTemplate' %}" class="btn btn-outline">Back to Templates</a>
+            <a href="{% url 'downloadPortfolioZip' 'template2' %}" class="btn btn-outline"><i class="fa-solid fa-download"></i> Download ZIP</a>
+            <form action="{% url 'saveTemplateChoice' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="template_id" value="template2">
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Publish Portfolio</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <h1>{{ portfolio.name }}</h1>
+        <h2>{{ portfolio.role }}</h2>
+        {% if portfolio.summary %}
+        <p style="max-width: 600px; color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">{{ portfolio.summary }}</p>
+        {% endif %}
+        
+        <!-- Skill Scroller right inside the hero -->
+        {% if portfolio.skills %}
+        <div class="skills-scroller">
+            <div class="skills-inner">
+                {% for skill in portfolio.skills %}
+                {% if skill.category %}
+                {% for item in skill.items %}
+                <div class="skill-pill"><i class="fa-solid fa-circle-nodes"></i> {{ item }}</div>
+                {% endfor %}
+                {% else %}
+                <div class="skill-pill"><i class="fa-solid fa-circle-nodes"></i> {{ skill }}</div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="scroll-down">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Projects -->
+        {% if portfolio.projects %}
+        <section class="reveal">
+            <div class="section-header">
+                <h2>Featured Projects</h2>
+            </div>
+            <div class="projects-grid">
+                {% for project in portfolio.projects %}
+                <div class="project-card">
+                    <h3>{{ project.heading|default:project }}</h3>
+                    {% if project.body %}
+                    <p>{{ project.body }}</p>
+                    {% endif %}
+                    <span class="project-link">
+                        Selected Project <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Experience -->
+        {% if portfolio.experience %}
+        <section class="reveal">
+            <div class="section-header">
+                <h2>Journey</h2>
+            </div>
+            <div class="timeline">
+                {% for exp in portfolio.experience %}
+                <div class="timeline-container {% cycle 'left' 'right' %}">
+                    <div class="timeline-content">
+                        <h3>{{ exp.heading|default:exp }}</h3>
+                        {% if exp.body %}
+                        <p>{{ exp.body }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Education -->
+        {% if portfolio.education %}
+        <section class="reveal">
+            <div class="section-header">
+                <h2>Education</h2>
+            </div>
+            <div class="grid-cards">
+                {% for edu in portfolio.education %}
+                <div class="simple-card">
+                    <h3>{{ edu.heading|default:edu }}</h3>
+                    {% if edu.body %}
+                    <p>{{ edu.body }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Certifications -->
+        {% if portfolio.certifications %}
+        <section class="reveal">
+            <div class="section-header">
+                <h2>Certifications</h2>
+            </div>
+            <div class="grid-cards">
+                {% for cert in portfolio.certifications %}
+                <div class="simple-card" style="border-top: 3px solid var(--gradient-start);">
+                    {% if cert.heading %}
+                    <h3>{{ cert.heading }}</h3>
+                    {% if cert.body %}<p>{{ cert.body }}</p>{% endif %}
+                    {% else %}
+                    <h3>{{ cert }}</h3>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Achievements -->
+        {% if portfolio.achievements %}
+        <section class="reveal">
+            <div class="section-header">
+                <h2>Achievements</h2>
+            </div>
+            <div class="vertical-list">
+                {% for ach in portfolio.achievements %}
+                <div class="list-card">
+                    <i class="fa-solid fa-trophy"></i>
+                    <div class="list-card-content">
+                        <p>{{ ach }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Publications -->
+        {% if portfolio.publications %}
+        <section class="reveal">
+            <div class="section-header">
+                <h2>Publications</h2>
+            </div>
+            <div class="vertical-list">
+                {% for pub in portfolio.publications %}
+                <div class="list-card">
+                    <i class="fa-solid fa-book"></i>
+                    <div class="list-card-content">
+                        <p>{{ pub }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Volunteer -->
+        {% if portfolio.volunteer %}
+        <section class="reveal">
+            <div class="section-header">
+                <h2>Volunteering</h2>
+            </div>
+            <div class="vertical-list">
+                {% for vol in portfolio.volunteer %}
+                <div class="list-card">
+                    <i class="fa-solid fa-hands-helping"></i>
+                    <div class="list-card-content">
+                        <p>{{ vol }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+    </div>
+
+    <!-- Floating Contact Card -->
+    <div class="floating-contact">
+        {% if portfolio.email %}
+        <a href="mailto:{{ portfolio.email }}" class="floating-icon" title="Email"><i class="fa-solid fa-envelope"></i></a>
+        {% endif %}
+        {% if portfolio.phone %}
+        <a href="tel:{{ portfolio.phone }}" class="floating-icon" title="Phone"><i class="fa-solid fa-phone"></i></a>
+        {% endif %}
+        {% if portfolio.github %}
+        <a href="{{ portfolio.github }}" target="_blank" class="floating-icon" title="GitHub"><i class="fa-brands fa-github"></i></a>
+        {% endif %}
+        {% if portfolio.linkedin %}
+        <a href="{{ portfolio.linkedin }}" target="_blank" class="floating-icon" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+        {% endif %}
+    </div>
+
+    <!-- Footer with Languages and Interests -->
+    <footer>
+        <div class="footer-chips">
+            {% if portfolio.languages %}
+            {% for lang in portfolio.languages %}
+            <div class="footer-chip">
+                <i class="fa-solid fa-language"></i>
+                <span>{{ lang.name }}{% if lang.proficiency %} ({{ lang.proficiency }}){% endif %}</span>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            {% if portfolio.interests %}
+            {% for interest in portfolio.interests %}
+            <div class="footer-chip">
+                <i class="fa-solid fa-heart"></i>
+                <span>{{ interest }}</span>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+        
+        <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; {{ portfolio.name }}. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Simple IntersectionObserver for Fade In Scroll Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    </script>
+</body>
+</html>

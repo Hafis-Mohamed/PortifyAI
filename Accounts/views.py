@@ -8,16 +8,15 @@ def index(request):
 
 def userLogin(request):
     if request.method == "POST":
-        email = request.POST.get("email")
+        username = request.POST.get("username")
         password = request.POST.get("password")
         # Django's authenticate checks the hashed password in the DB.
-        # We pass the email as the username since that's how we registered them.
-        user = authenticate(request, username=email, password=password)
+        user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             return redirect("index") # Redirect to index after login
         else:
-            messages.error(request, "Invalid email or password.")
+            messages.error(request, "Invalid username or password.")
             return render(request, "userLogin.html")
     return render(request, "userLogin.html")
 
@@ -27,24 +26,31 @@ def userLogout(request):
 
 def userRegistration(request):
     if request.method == "POST":
+        username = request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
         
+        # Make sure username is valid (no spaces, alphanumeric is best)
+        if not username.isalnum():
+            messages.error(request, "Username can only contain letters and numbers.")
+            return render(request, "userRegistration.html")
+            
         if password == confirm_password:
-            # Check if user already exists via email (which acts as their username)
-            if User.objects.filter(username=email).exists():
+            # Check if user already exists
+            if User.objects.filter(username=username).exists():
+                messages.error(request, "Username is already taken.")
+                return render(request, "userRegistration.html")
+            if User.objects.filter(email=email).exists():
                 messages.error(request, "Email is already registered.")
                 return render(request, "userRegistration.html")
             
             # create_user automatically hashes the password!
-            # We map their email to the 'username' field so Django auth works natively.
-            username_part = email.split('@')[0]
             new_user = User.objects.create_user(
-                username=email,
+                username=username,
                 email=email,
                 password=password,
-                first_name=username_part,
+                first_name=username,
             )
             # Log the user in immediately after registering
             login(request, new_user)

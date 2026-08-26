@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Deployed! | PortifyAI</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        .success-card {
+            max-width: 600px;
+            width: 90%;
+            padding: 3.5rem;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .success-icon {
+            font-size: 5rem;
+            color: var(--cyan);
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 20px rgba(6, 182, 212, 0.4));
+            animation: pulse-icon 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-icon {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .success-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .success-desc {
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .link-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 1.2rem;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        
+        .live-link {
+            font-size: 1.15rem;
+            color: var(--cyan);
+            font-weight: 600;
+            text-decoration: none;
+            word-break: break-all;
+            transition: var(--transition);
+        }
+        
+        .live-link:hover {
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.05rem;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Glowing Background Elements -->
+    <div class="bg-glowing-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <div class="success-card glass-panel">
+        <i class="fa-solid fa-circle-check success-icon"></i>
+        <h1 class="success-title">Deployment Successful!</h1>
+        <p class="success-desc">Your beautiful new portfolio is officially live on the internet. You can share this link with recruiters immediately!</p>
+        
+        <div class="link-box">
+            <i class="fa-solid fa-globe" style="color: var(--text-muted); font-size: 1.2rem;"></i>
+            <a href="{{ live_url }}" target="_blank" class="live-link">{{ live_url }}</a>
+        </div>
+
+        <a href="{% url 'chooseTemplate' %}" class="btn btn-primary action-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back to Templates</span>
+        </a>
+    </div>
+</body>
+</html>

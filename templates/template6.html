@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ portfolio.name }} | Swiss Design Portfolio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #F5F5F2;
+            --text-main: #111111;
+            --text-muted: #555555;
+            --accent: #FF3B30; /* Bold Red */
+            --border-color: #111111;
+            --border-light: rgba(17, 17, 17, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 8rem;
+        }
+
+        /* Preview Bar */
+        .preview-bar {
+            background: #111111;
+            color: #F5F5F2;
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .preview-bar h3 {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .preview-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .preview-actions form {
+            display: inline;
+        }
+
+        .btn {
+            padding: 0.4rem 1.2rem;
+            border-radius: 0px; /* Strict Swiss sharp borders */
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border-color: rgba(245, 245, 242, 0.3);
+            color: #F5F5F2;
+        }
+
+        .btn-outline:hover {
+            border-color: #F5F5F2;
+            background: rgba(245, 245, 242, 0.05);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #E02E24;
+        }
+
+        /* Layout Container */
+        .swiss-container {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6rem;
+        }
+
+        /* Grid utilities */
+        .swiss-grid-12 {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2rem;
+        }
+
+        /* Hero Section styling */
+        .hero-section {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 4rem;
+        }
+
+        .hero-left {
+            grid-column: 1 / 9;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .hero-right {
+            grid-column: 9 / 13;
+            border-left: 1px solid var(--border-light);
+            padding-left: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .name-title {
+            font-size: clamp(3.5rem, 8vw, 6.5rem);
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -4px;
+            text-transform: uppercase;
+            word-break: break-word;
+        }
+
+        .role-tagline {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            color: var(--accent);
+        }
+
+        .summary-block {
+            font-size: 1.15rem;
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--text-muted);
+            max-width: 700px;
+        }
+
+        /* Availability Status */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent);
+            border-radius: 50%;
+        }
+
+        /* Compact info stacked list */
+        .info-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .info-row {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .info-value a {
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 1.5px solid var(--border-color);
+        }
+
+        .info-value a:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* Section Layouts */
+        .section-block {
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+        }
+
+        .section-label {
+            grid-column: 1 / 4;
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 900;
+            color: var(--text-main);
+            letter-spacing: -2px;
+            line-height: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .section-label-num {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            line-height: 0.8;
+            color: var(--accent);
+        }
+
+        .section-label-text {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            margin-top: 0.5rem;
+        }
+
+        .section-content {
+            grid-column: 4 / 13;
+        }
+
+        /* Experience Bibliography (Asymmetric Swiss Grid) */
+        .exp-list {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .exp-row {
+            display: flex;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 2rem;
+        }
+
+        .exp-date-col {
+            width: 25%;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .exp-content-col {
+            width: 75%;
+        }
+
+        .exp-role-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .exp-desc {
+            font-size: 0.98rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        /* Education & Certs Row-based structure */
+        .rows-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .row-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-light);
+            padding: 1.2rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .row-title {
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .row-meta {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Numbered Selected Projects with alternating widths */
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        .project-row {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 2rem;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 3rem;
+        }
+
+        /* Alternating layout structures for projects */
+        .project-row:nth-child(even) .proj-info {
+            grid-column: 1 / 6;
+        }
+        .project-row:nth-child(even) .proj-meta {
+            grid-column: 6 / 10;
+            border-left: 1px solid var(--border-light);
+            padding-left: 2rem;
+        }
+
+        .project-row:nth-child(odd) .proj-info {
+            grid-column: 5 / 10;
+        }
+        .project-row:nth-child(odd) .proj-meta {
+            grid-column: 1 / 5;
+            border-right: 1px solid var(--border-light);
+            padding-right: 2rem;
+        }
+
+        .proj-num {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 0.9;
+            color: var(--accent);
+            letter-spacing: -2px;
+            margin-bottom: 1rem;
+        }
+
+        .proj-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .proj-title a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .proj-title a:hover {
+            color: var(--accent);
+        }
+
+        .proj-desc {
+            font-size: 0.98rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .proj-tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 1rem;
+        }
+
+        .proj-tech-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: 1px solid var(--border-color);
+            padding: 0.15rem 0.5rem;
+        }
+
+        /* Categorized Matrix for Skills */
+        .skills-matrix {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .matrix-col {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .matrix-header {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 900;
+            border-bottom: 1.5px solid var(--border-color);
+            padding-bottom: 0.4rem;
+            letter-spacing: 0.05em;
+        }
+
+        .matrix-item {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        /* Numbered Editorial entries for achievements / publications */
+        .editorial-entries {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .editorial-entry {
+            display: flex;
+            align-items: baseline;
+            gap: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 1.2rem;
+        }
+
+        .entry-num {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent);
+            width: 30px;
+            flex-shrink: 0;
+        }
+
+        .entry-content {
+            font-size: 0.98rem;
+            color: var(--text-muted);
+        }
+
+        /* Bottom compact columns for volunteer / interests */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 3rem;
+        }
+
+        .bottom-col-title {
+            font-size: 0.8rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1.2rem;
+            border-bottom: 1.5px solid var(--border-color);
+            padding-bottom: 0.4rem;
+        }
+
+        .bottom-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        /* Responsive styling */
+        @media (max-width: 900px) {
+            .swiss-grid-12 {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+            .hero-right {
+                border-left: none;
+                padding-left: 0;
+                border-top: 1px solid var(--border-light);
+                padding-top: 2rem;
+            }
+            .project-row {
+                display: flex;
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            .project-row:nth-child(even) .proj-meta,
+            .project-row:nth-child(odd) .proj-meta {
+                border: none;
+                padding: 0;
+            }
+            .bottom-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% if not is_export %}
+    <div class="preview-bar">
+        <h3>Preview: Swiss Editorial</h3>
+        <div class="preview-actions">
+            <a href="{% url 'chooseTemplate' %}" class="btn btn-outline">Back to Templates</a>
+            <a href="{% url 'downloadPortfolioZip' 'template6' %}" class="btn btn-outline"><i class="fa-solid fa-download"></i> Download ZIP</a>
+            <form action="{% url 'saveTemplateChoice' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="template_id" value="template6">
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Publish Portfolio</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="swiss-container">
+        <!-- Hero Section -->
+        <section class="hero-section swiss-grid-12">
+            <div class="hero-left">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span>Available for work</span>
+                </div>
+                <h1 class="name-title">{{ portfolio.name }}</h1>
+                <div class="role-tagline">{{ portfolio.role }}</div>
+                {% if portfolio.summary %}
+                <p class="summary-block">{{ portfolio.summary }}</p>
+                {% endif %}
+            </div>
+
+            <div class="hero-right">
+                <div class="info-stack">
+                    {% if portfolio.location %}
+                    <div class="info-row">
+                        <span class="info-label">Based in</span>
+                        <span class="info-value">{{ portfolio.location }}</span>
+                    </div>
+                    {% endif %}
+                    {% if portfolio.email %}
+                    <div class="info-row">
+                        <span class="info-label">Write to</span>
+                        <span class="info-value"><a href="mailto:{{ portfolio.email }}">{{ portfolio.email }}</a></span>
+                    </div>
+                    {% endif %}
+                    {% if portfolio.phone %}
+                    <div class="info-row">
+                        <span class="info-label">Call directly</span>
+                        <span class="info-value"><a href="tel:{{ portfolio.phone }}">{{ portfolio.phone }}</a></span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="info-stack">
+                    {% if portfolio.github %}
+                    <div class="info-row">
+                        <span class="info-label">GitHub</span>
+                        <span class="info-value"><a href="{{ portfolio.github }}" target="_blank">github.com/profile</a></span>
+                    </div>
+                    {% endif %}
+                    {% if portfolio.linkedin %}
+                    <div class="info-row">
+                        <span class="info-label">LinkedIn</span>
+                        <span class="info-value"><a href="{{ portfolio.linkedin }}" target="_blank">linkedin.com/profile</a></span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience -->
+        {% if portfolio.experience %}
+        <section class="section-block swiss-grid-12">
+            <div class="section-label">
+                <span class="section-label-num">01</span>
+                <span class="section-label-text">Experience</span>
+            </div>
+            <div class="section-content">
+                <div class="exp-list">
+                    {% for exp in portfolio.experience %}
+                    <div class="exp-row">
+                        <div class="exp-date-col">Active Era</div>
+                        <div class="exp-content-col">
+                            <h4 class="exp-role-title">{{ exp.heading|default:exp }}</h4>
+                            {% if exp.body %}
+                            <div class="exp-desc">{{ exp.body }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Selected Projects -->
+        {% if portfolio.projects %}
+        <section class="section-block swiss-grid-12">
+            <div class="section-label">
+                <span class="section-label-num">02</span>
+                <span class="section-label-text">Selected Projects</span>
+            </div>
+            <div class="section-content">
+                <div class="projects-list">
+                    {% for project in portfolio.projects %}
+                    <div class="project-row">
+                        <!-- Alternating visual layout is driven by CSS child logic -->
+                        <div class="proj-info">
+                            <div class="proj-num">/{{ forloop.counter|stringformat:"02d" }}</div>
+                            <h4 class="proj-title">{{ project.heading|default:project }}</h4>
+                            {% if project.body %}
+                            <p class="proj-desc">{{ project.body }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="proj-meta">
+                            <div class="info-row" style="margin-bottom: 1rem;">
+                                <span class="info-label">Release Year</span>
+                                <span class="info-value" style="font-size: 0.95rem;">Recent</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Build Details</span>
+                                <span class="info-value" style="font-size: 0.95rem;">
+                                    <a href="#" target="_blank">External Build</a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Skills Matrix -->
+        {% if portfolio.skills %}
+        <section class="section-block swiss-grid-12">
+            <div class="section-label">
+                <span class="section-label-num">03</span>
+                <span class="section-label-text">Skill Matrix</span>
+            </div>
+            <div class="section-content">
+                <div class="skills-matrix">
+                    {% for skill in portfolio.skills %}
+                    {% if skill.category %}
+                    <div class="matrix-col">
+                        <div class="matrix-header">{{ skill.category }}</div>
+                        {% for item in skill.items %}
+                        <div class="matrix-item">{{ item }}</div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {% if forloop.first %}
+                    <div class="matrix-col">
+                        <div class="matrix-header">Core Capabilities</div>
+                    {% endif %}
+                        <div class="matrix-item">{{ skill }}</div>
+                    {% if forloop.last %}</div>{% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Education -->
+        {% if portfolio.education %}
+        <section class="section-block swiss-grid-12">
+            <div class="section-label">
+                <span class="section-label-num">04</span>
+                <span class="section-label-text">Education</span>
+            </div>
+            <div class="section-content">
+                <div class="rows-list">
+                    {% for edu in portfolio.education %}
+                    <div class="row-item">
+                        <div class="row-title">{{ edu.heading|default:edu }}</div>
+                        {% if edu.body %}
+                        <div class="row-meta">{{ edu.body }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Certifications -->
+        {% if portfolio.certifications %}
+        <section class="section-block swiss-grid-12">
+            <div class="section-label">
+                <span class="section-label-num">05</span>
+                <span class="section-label-text">Certifications</span>
+            </div>
+            <div class="section-content">
+                <div class="rows-list">
+                    {% for cert in portfolio.certifications %}
+                    <div class="row-item">
+                        {% if cert.heading %}
+                        <div class="row-title">{{ cert.heading }}</div>
+                        {% if cert.body %}<div class="row-meta">{{ cert.body }}</div>{% endif %}
+                        {% else %}
+                        <div class="row-title">{{ cert }}</div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Achievements -->
+        {% if portfolio.achievements %}
+        <section class="section-block swiss-grid-12">
+            <div class="section-label">
+                <span class="section-label-num">06</span>
+                <span class="section-label-text">Achievements</span>
+            </div>
+            <div class="section-content">
+                <div class="editorial-entries">
+                    {% for ach in portfolio.achievements %}
+                    <div class="editorial-entry">
+                        <div class="entry-num">[{{ forloop.counter }}]</div>
+                        <div class="entry-content">{{ ach }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Publications -->
+        {% if portfolio.publications %}
+        <section class="section-block swiss-grid-12">
+            <div class="section-label">
+                <span class="section-label-num">07</span>
+                <span class="section-label-text">Publications</span>
+            </div>
+            <div class="section-content">
+                <div class="editorial-entries">
+                    {% for pub in portfolio.publications %}
+                    <div class="editorial-entry">
+                        <div class="entry-num">[{{ forloop.counter }}]</div>
+                        <div class="entry-content">{{ pub }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Bottom Grid for Volunteering and Interests -->
+        <div class="bottom-grid">
+            <!-- Volunteering -->
+            <div>
+                <div class="bottom-col-title">Volunteering</div>
+                <div class="bottom-list">
+                    {% if portfolio.volunteer %}
+                    {% for vol in portfolio.volunteer %}
+                    <div>• {{ vol }}</div>
+                    {% endfor %}
+                    {% else %}
+                    <div style="font-style: italic;">No volunteer history listed.</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Interests -->
+            <div>
+                <div class="bottom-col-title">Interests & Research</div>
+                <div class="bottom-list">
+                    {% if portfolio.interests %}
+                    {% for interest in portfolio.interests %}
+                    <div>• {{ interest }}</div>
+                    {% endfor %}
+                    {% else %}
+                    <div style="font-style: italic;">No interests listed.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Languages (Strictly formatted at the very bottom in small font) -->
+        {% if portfolio.languages %}
+        <div style="border-top: 1px solid var(--border-light); padding-top: 2rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;">
+            <div class="info-row">
+                <span class="info-label">Languages spoken</span>
+                <span class="info-value" style="font-weight: 500; font-size: 0.92rem; color: var(--text-muted); margin-top: 0.3rem;">
+                    {% for lang in portfolio.languages %}
+                    {{ lang.name }}{% if lang.proficiency %} ({{ lang.proficiency }}){% endif %}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </span>
+            </div>
+            <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; align-self: flex-end;">
+                &copy; {{ portfolio.name }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

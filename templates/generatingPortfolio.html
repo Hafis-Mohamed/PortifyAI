@@ -42,8 +42,15 @@
         
         .scanner-box i {
             font-size: 6rem;
-            color: var(--text-secondary);
+            color: var(--primary);
             opacity: 0.5;
+            animation: pulse-icon 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-icon {
+            0% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.5; }
         }
 
         .scanner-line {
@@ -58,20 +65,10 @@
         }
 
         @keyframes scan {
-            0% {
-                top: 0;
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                top: 100%;
-                opacity: 0;
-            }
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
         }
 
         .loading-title {
@@ -120,11 +117,11 @@
 
     <div class="loading-container">
         <div class="scanner-box">
-            <i class="fa-solid fa-file-pdf"></i>
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
             <div class="scanner-line"></div>
         </div>
-        <h1 class="loading-title">Fetching Details...</h1>
-        <div class="status-text" id="statusText">Extracting details from resume...</div>
+        <h1 class="loading-title">Polishing Your Data...</h1>
+        <div class="status-text" id="statusText">Initiating AI Refinement...</div>
         
         <div class="progress-bar-container">
             <div class="progress-bar" id="progressBar"></div>
@@ -133,12 +130,11 @@
 
     <script>
         const statuses = [
-            "Scanning document...",
-            "Extracting personal information...",
-            "Parsing contact details...",
-            "Identifying professional links...",
-            "Formatting data...",
-            "Finalizing extraction..."
+            "Applying AI Polish...",
+            "Structuring Layouts...",
+            "Formatting Experience...",
+            "Highlighting Key Skills...",
+            "Finalizing Portfolio..."
         ];
         
         const statusEl = document.getElementById('statusText');
@@ -146,7 +142,7 @@
         
         let step = 0;
         const totalSteps = statuses.length;
-        const timePerStep = 1200; // 1.2 seconds per step
+        const timePerStep = 1800; // 1.8 seconds per step to roughly match 9-10s Gemini response time
         
         function updateStatus() {
             if (step < totalSteps) {
@@ -156,15 +152,15 @@
                 step++;
                 setTimeout(updateStatus, timePerStep);
             } else {
-                // Done loading, redirect to dashboard or home
-                setTimeout(() => {
-                    window.location.href = "{% url 'editDetails' %}";
-                }, 500);
+                statusEl.textContent = "Almost there...";
             }
         }
         
         // Start animation
         setTimeout(updateStatus, 500);
+
+        // Immediately trigger the background process
+        window.location.href = "{% url 'processPortfolio' %}";
     </script>
 </body>
 </html>

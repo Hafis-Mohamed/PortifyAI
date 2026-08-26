@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ portfolio.name }} | Dev Portfolio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0A0E14;
+            --sidebar-bg: #0F141C;
+            --editor-bg: #141B24;
+            --tab-active: #1A2332;
+            --tab-inactive: #0F141C;
+            --accent-green: #00FF9C;
+            --accent-blue: #61DAFB;
+            --accent-orange: #FF8F40;
+            --text-main: #ABB2BF;
+            --text-white: #FFFFFF;
+            --text-muted: #5C6370;
+            --border-color: #1A2332;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', monospace;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Preview Bar */
+        .preview-bar {
+            background: #0F141C;
+            border-bottom: 2px solid var(--border-color);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            z-index: 1000;
+        }
+
+        .preview-bar h3 {
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            font-weight: 500;
+        }
+
+        .preview-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .preview-actions form {
+            display: inline;
+        }
+
+        .btn {
+            padding: 0.4rem 1.2rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent-blue);
+            color: var(--text-white);
+            background: rgba(97, 218, 251, 0.05);
+        }
+
+        .btn-primary {
+            background: var(--accent-green);
+            color: #0A0E14;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 15px rgba(0, 255, 156, 0.4);
+        }
+
+        /* IDE Layout */
+        .ide-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        /* Sidebar: File Explorer */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 0.8rem 1rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0.5rem 0;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .file-item {
+            padding: 0.5rem 1.2rem;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+
+        .file-item:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+            color: var(--text-white);
+        }
+
+        .file-item.active {
+            background-color: var(--tab-active);
+            color: var(--accent-blue);
+            border-left: 2px solid var(--accent-blue);
+        }
+
+        .file-item i {
+            width: 16px;
+        }
+        
+        .icon-md { color: #E34F26; }
+        .icon-json { color: #F1E05A; }
+        .icon-py { color: #3572A5; }
+        .icon-yaml { color: #CB3E20; }
+        .icon-txt { color: #ABB2BF; }
+
+        /* Main Workspace */
+        .workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--editor-bg);
+            overflow: hidden;
+        }
+
+        /* Tab Header */
+        .tab-header {
+            display: flex;
+            background-color: var(--sidebar-bg);
+            height: 35px;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 0 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            background-color: var(--tab-inactive);
+            border-right: 1px solid var(--border-color);
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background-color: var(--editor-bg);
+            color: var(--text-white);
+            border-top: 2px solid var(--accent-blue);
+            font-weight: 500;
+        }
+
+        /* Editor Area */
+        .editor-body {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Code Line Number Simulator */
+        .editor-content {
+            display: flex;
+            gap: 1.5rem;
+            min-height: 100%;
+        }
+
+        .line-numbers {
+            text-align: right;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            user-select: none;
+            line-height: 1.8;
+        }
+
+        .code-viewport {
+            flex: 1;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-main);
+        }
+
+        .content-pane {
+            display: none;
+        }
+
+        .content-pane.active {
+            display: block;
+        }
+
+        /* Code aesthetics */
+        .keyword { color: var(--accent-orange); }
+        .string { color: var(--accent-green); }
+        .comment { color: var(--text-muted); font-style: italic; }
+        .number { color: #D19A66; }
+        .class-name { color: var(--accent-blue); }
+
+        .terminal-header-dots {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .dot-red { background-color: #FF5F56; }
+        .dot-yellow { background-color: #FFBD2E; }
+        .dot-green { background-color: #27C93F; }
+
+        /* Typewriter Intro styling */
+        .terminal-prompt {
+            color: var(--accent-green);
+        }
+        
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background-color: var(--accent-green);
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* Custom Structured Styling for inner code */
+        .code-block {
+            background-color: rgba(0,0,0,0.25);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .code-block h3 {
+            color: var(--accent-blue);
+            margin-bottom: 0.8rem;
+            font-size: 1.05rem;
+        }
+
+        /* Tech Tags */
+        .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 1rem;
+        }
+
+        .tag-token {
+            background-color: var(--tab-active);
+            border: 1px solid var(--border-color);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--accent-green);
+        }
+
+        /* Progress items for skills */
+        .progress-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+        }
+
+        .progress-track {
+            height: 6px;
+            background-color: var(--sidebar-bg);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--accent-green);
+            width: 0;
+            transition: width 1s ease;
+        }
+
+        /* Status Line Footer */
+        .editor-footer {
+            height: 25px;
+            background-color: var(--sidebar-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+            .sidebar span {
+                display: none;
+            }
+            .file-item {
+                padding: 0.8rem;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% if not is_export %}
+    <div class="preview-bar">
+        <h3>Preview: Terminal IDE</h3>
+        <div class="preview-actions">
+            <a href="{% url 'chooseTemplate' %}" class="btn btn-outline">Back to Templates</a>
+            <a href="{% url 'downloadPortfolioZip' 'template3' %}" class="btn btn-outline"><i class="fa-solid fa-download"></i> Download ZIP</a>
+            <form action="{% url 'saveTemplateChoice' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="template_id" value="template3">
+                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-up"></i> Publish Portfolio</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="ide-container">
+        <!-- Explorer Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">Explorer</div>
+            <ul class="file-list">
+                <li class="file-item active" onclick="switchTab('about')">
+                    <i class="fa-brands fa-markdown icon-md"></i>
+                    <span>about.md</span>
+                </li>
+                {% if portfolio.experience %}
+                <li class="file-item" onclick="switchTab('experience')">
+                    <i class="fa-regular fa-file-code icon-json"></i>
+                    <span>experience.json</span>
+                </li>
+                {% endif %}
+                {% if portfolio.projects %}
+                <li class="file-item" onclick="switchTab('projects')">
+                    <i class="fa-brands fa-python icon-py"></i>
+                    <span>projects.py</span>
+                </li>
+                {% endif %}
+                {% if portfolio.skills %}
+                <li class="file-item" onclick="switchTab('skills')">
+                    <i class="fa-solid fa-gears icon-yaml"></i>
+                    <span>skills.yaml</span>
+                </li>
+                {% endif %}
+                {% if portfolio.education %}
+                <li class="file-item" onclick="switchTab('education')">
+                    <i class="fa-regular fa-file-lines icon-txt"></i>
+                    <span>education.txt</span>
+                </li>
+                {% endif %}
+                {% if portfolio.certifications %}
+                <li class="file-item" onclick="switchTab('certifications')">
+                    <i class="fa-brands fa-markdown icon-md"></i>
+                    <span>certs.md</span>
+                </li>
+                {% endif %}
+                {% if portfolio.achievements or portfolio.publications or portfolio.volunteer %}
+                <li class="file-item" onclick="switchTab('extra')">
+                    <i class="fa-regular fa-file-code icon-json"></i>
+                    <span>extra.json</span>
+                </li>
+                {% endif %}
+            </ul>
+        </aside>
+
+        <!-- Editor Area -->
+        <section class="workspace">
+            <div class="tab-header" id="tabHeader">
+                <div class="tab active" id="tab-about" onclick="switchTab('about')">about.md</div>
+                {% if portfolio.experience %}
+                <div class="tab" id="tab-experience" onclick="switchTab('experience')">experience.json</div>
+                {% endif %}
+                {% if portfolio.projects %}
+                <div class="tab" id="tab-projects" onclick="switchTab('projects')">projects.py</div>
+                {% endif %}
+                {% if portfolio.skills %}
+                <div class="tab" id="tab-skills" onclick="switchTab('skills')">skills.yaml</div>
+                {% endif %}
+                {% if portfolio.education %}
+                <div class="tab" id="tab-education" onclick="switchTab('education')">education.txt</div>
+                {% endif %}
+                {% if portfolio.certifications %}
+                <div class="tab" id="tab-certifications" onclick="switchTab('certifications')">certs.md</div>
+                {% endif %}
+                {% if portfolio.achievements or portfolio.publications or portfolio.volunteer %}
+                <div class="tab" id="tab-extra" onclick="switchTab('extra')">extra.json</div>
+                {% endif %}
+            </div>
+
+            <div class="editor-body">
+                <div class="terminal-header-dots">
+                    <div class="dot dot-red"></div>
+                    <div class="dot dot-yellow"></div>
+                    <div class="dot dot-green"></div>
+                </div>
+
+                <div class="editor-content">
+                    <div class="line-numbers" id="lineNumbers">
+                        <!-- Simulated lines generated by JS -->
+                    </div>
+                    <div class="code-viewport">
+                        
+                        <!-- ABOUT.MD PANE -->
+                        <div class="content-pane active" id="pane-about">
+                            <p class="comment"># Profile Summary</p>
+                            <p class="terminal-prompt">$ whoami</p>
+                            <p><span class="keyword">const</span> <span class="class-name">developer</span> = {</p>
+                            <p>&nbsp;&nbsp;name: <span class="string">"{{ portfolio.name }}"</span>,</p>
+                            <p>&nbsp;&nbsp;role: <span class="string">"{{ portfolio.role }}"</span>,</p>
+                            <p>&nbsp;&nbsp;location: <span class="string">"{{ portfolio.location }}"</span></p>
+                            <p>};</p>
+                            <br>
+                            {% if portfolio.summary %}
+                            <p class="comment">## Summary</p>
+                            <p>{{ portfolio.summary }}</p>
+                            <br>
+                            {% endif %}
+                            <p class="comment">## Contact Info</p>
+                            <p class="terminal-prompt">$ cat contact_info.txt</p>
+                            {% if portfolio.email %}<p>Email: <span class="string">{{ portfolio.email }}</span></p>{% endif %}
+                            {% if portfolio.phone %}<p>Phone: <span class="string">{{ portfolio.phone }}</span></p>{% endif %}
+                            {% if portfolio.github %}<p>GitHub: <a href="{{ portfolio.github }}" target="_blank" class="string">{{ portfolio.github }}</a></p>{% endif %}
+                            {% if portfolio.linkedin %}<p>LinkedIn: <a href="{{ portfolio.linkedin }}" target="_blank" class="string">{{ portfolio.linkedin }}</a></p>{% endif %}
+                            
+                            {% if portfolio.languages %}
+                            <br>
+                            <p class="comment">## Languages</p>
+                            {% for lang in portfolio.languages %}
+                            <p>— {{ lang.name }}: <span class="keyword">{{ lang.proficiency|default:"Fluent" }}</span></p>
+                            {% endfor %}
+                            {% endif %}
+
+                            {% if portfolio.interests %}
+                            <br>
+                            <p class="comment">## Interests</p>
+                            <p>[{% for interest in portfolio.interests %}<span class="string">"{{ interest }}"</span>{% if not forloop.last %}, {% endif %}{% endfor %}]</p>
+                            {% endif %}
+                        </div>
+
+                        <!-- EXPERIENCE.JSON PANE -->
+                        {% if portfolio.experience %}
+                        <div class="content-pane" id="pane-experience">
+                            <p class="comment">// Professional Journey</p>
+                            <p><span class="keyword">class</span> <span class="class-name">ExperienceHistory</span> {</p>
+                            {% for exp in portfolio.experience %}
+                            <div class="code-block">
+                                <h3>{{ exp.heading|default:exp }}</h3>
+                                {% if exp.body %}
+                                <p class="comment">/* Responsibilities */</p>
+                                <p>{{ exp.body }}</p>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                            <p>}</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- PROJECTS.PY PANE -->
+                        {% if portfolio.projects %}
+                        <div class="content-pane" id="pane-projects">
+                            <p class="comment"># Selected Works</p>
+                            <p class="keyword">def</p> <p class="class-name">list_projects</p>():
+                            <p style="padding-left: 2rem;">return [</p>
+                            {% for project in portfolio.projects %}
+                            <div class="code-block" style="margin-left: 2rem;">
+                                <h3>{{ project.heading|default:project }}</h3>
+                                {% if project.body %}
+                                <p>{{ project.body }}</p>
+                                {% endif %}
+                                <p class="terminal-prompt" style="font-size: 0.8rem; margin-top: 0.8rem;">$ git clone link_available_upon_request</p>
+                            </div>
+                            {% endfor %}
+                            <p style="padding-left: 2rem;">]</p>
+                        </div>
+                        {% endif %}
+
+                        <!-- SKILLS.YAML PANE -->
+                        {% if portfolio.skills %}
+                        <div class="content-pane" id="pane-skills">
+                            <p class="comment"># Skill Stack Matrix</p>
+                            {% for skill in portfolio.skills %}
+                            {% if skill.category %}
+                            <p class="keyword">{{ skill.category }}:</p>
+                            <div style="padding-left: 2rem; margin-bottom: 1.5rem;">
+                                {% for item in skill.items %}
+                                <p>— <span class="string">{{ item }}</span></p>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <p>— <span class="string">{{ skill }}</span></p>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- EDUCATION.TXT PANE -->
+                        {% if portfolio.education %}
+                        <div class="content-pane" id="pane-education">
+                            <p class="comment"># Academic Profile</p>
+                            {% for edu in portfolio.education %}
+                            <div class="code-block">
+                                <h3>{{ edu.heading|default:edu }}</h3>
+                                {% if edu.body %}
+                                <p>{{ edu.body }}</p>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- CERTS.MD PANE -->
+                        {% if portfolio.certifications %}
+                        <div class="content-pane" id="pane-certifications">
+                            <p class="comment"># Credentials & Certifications</p>
+                            {% for cert in portfolio.certifications %}
+                            <div class="code-block">
+                                {% if cert.heading %}
+                                <h3>{{ cert.heading }}</h3>
+                                {% if cert.body %}<p>{{ cert.body }}</p>{% endif %}
+                                {% else %}
+                                <h3>{{ cert }}</h3>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- EXTRA.JSON PANE -->
+                        <div class="content-pane" id="pane-extra">
+                            <p class="comment">// Additional Accomplishments</p>
+                            <p>{</p>
+                            
+                            {% if portfolio.achievements %}
+                            <div style="padding-left: 2rem;">
+                                <p class="keyword">"achievements": [</p>
+                                {% for ach in portfolio.achievements %}
+                                <p style="padding-left: 2rem;"><span class="string">"{{ ach }}"</span>{% if not forloop.last %},{% endif %}</p>
+                                {% endfor %}
+                                <p class="keyword">],</p>
+                            </div>
+                            {% endif %}
+
+                            {% if portfolio.publications %}
+                            <div style="padding-left: 2rem; margin-top: 1rem;">
+                                <p class="keyword">"publications": [</p>
+                                {% for pub in portfolio.publications %}
+                                <p style="padding-left: 2rem;"><span class="string">"{{ pub }}"</span>{% if not forloop.last %},{% endif %}</p>
+                                {% endfor %}
+                                <p class="keyword">],</p>
+                            </div>
+                            {% endif %}
+
+                            {% if portfolio.volunteer %}
+                            <div style="padding-left: 2rem; margin-top: 1rem;">
+                                <p class="keyword">"volunteer_work": [</p>
+                                {% for vol in portfolio.volunteer %}
+                                <p style="padding-left: 2rem;"><span class="string">"{{ vol }}"</span>{% if not forloop.last %},{% endif %}</p>
+                                {% endfor %}
+                                <p class="keyword">]</p>
+                            </div>
+                            {% endif %}
+                            
+                            <p>}</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer status bar -->
+            <footer class="editor-footer">
+                <div>UTF-8</div>
+                <div>portify_env</div>
+            </footer>
+        </section>
+    </div>
+
+    <script>
+        // Generate Line Numbers
+        function generateLines() {
+            const container = document.getElementById('lineNumbers');
+            container.innerHTML = '';
+            for (let i = 1; i <= 60; i++) {
+                const line = document.createElement('div');
+                line.textContent = i;
+                container.appendChild(line);
+            }
+        }
+
+        // Switch Active Tabs & Panels
+        function switchTab(tabId) {
+            // Remove active class from all files
+            document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
+            // Remove active class from all editor tabs
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            // Remove active class from all content panes
+            document.querySelectorAll('.content-pane').forEach(el => el.classList.remove('active'));
+
+            // Find clicked elements
+            const tabEl = document.getElementById('tab-' + tabId);
+            const paneEl = document.getElementById('pane-' + tabId);
+            
+            // Add active class to clicked items
+            if (tabEl) tabEl.classList.add('active');
+            if (paneEl) paneEl.classList.add('active');
+
+            // Find corresponding item in sidebar file list and set active
+            const sidebarItems = document.querySelectorAll('.file-item');
+            sidebarItems.forEach(item => {
+                if (item.getAttribute('onclick').includes(tabId)) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // Initialize lines
+        generateLines();
+    </script>
+</body>
+</html>

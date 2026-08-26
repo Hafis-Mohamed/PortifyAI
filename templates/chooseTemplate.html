@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Template - PortifyAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0a0a0f;
+            --panel-bg: rgba(20, 20, 30, 0.7);
+            --cyan: #00f0ff;
+            --purple: #7b2cbf;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Elements */
+        .bg-glowing-blobs {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.4;
+            border-radius: 50%;
+            animation: float 20s infinite alternate;
+        }
+
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: rgba(123, 44, 191, 0.6);
+            top: -100px;
+            left: -100px;
+        }
+
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            background: rgba(0, 240, 255, 0.4);
+            bottom: -200px;
+            right: -100px;
+            animation-delay: -5s;
+        }
+
+        .bg-grid {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 30px) scale(1.1); }
+            100% { transform: translate(-30px, 60px) scale(0.9); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .template-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .template-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.15);
+        }
+
+        .template-preview {
+            height: 250px;
+            background: linear-gradient(45deg, #1a1a2e, #16213e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-card:nth-child(1) .template-preview {
+            background: linear-gradient(45deg, #111111, #333333);
+        }
+
+        .template-card:nth-child(2) .template-preview {
+            background: linear-gradient(45deg, #8B5CF6, #EC4899);
+        }
+
+        .template-card:nth-child(3) .template-preview {
+            background: linear-gradient(45deg, #0A0E14, #141B24);
+        }
+
+        .template-card:nth-child(4) .template-preview {
+            background: linear-gradient(45deg, #FAF7F0, #E7E5E4);
+        }
+
+        .template-card:nth-child(4) .template-preview i {
+            color: #1C1917 !important;
+        }
+
+        .template-card:nth-child(5) .template-preview {
+            background: linear-gradient(45deg, #080B14, #1E293B);
+        }
+
+        .template-card:nth-child(6) .template-preview {
+            background: linear-gradient(45deg, #F5F5F2, #E5E5DB);
+        }
+
+        .template-card:nth-child(6) .template-preview i {
+            color: #111111 !important;
+        }
+
+        .template-preview i {
+            font-size: 4rem;
+            color: rgba(255,255,255,0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .template-card:hover .template-preview i {
+            transform: scale(1.1);
+        }
+
+        .template-info {
+            padding: 2rem;
+        }
+
+        .template-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .template-desc {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .preview-btn {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .template-card:hover .preview-btn {
+            background: rgba(0, 240, 255, 0.1);
+        }
+
+        /* Message Styles */
+        .messages {
+            margin-bottom: 2rem;
+        }
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            color: #00f0ff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glowing-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <div class="container">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="header">
+            <h1>Choose Your Aesthetic</h1>
+            <p>Your details are saved! Pick a template to preview your new portfolio.</p>
+        </div>
+
+        <div class="template-grid">
+            <!-- Template 1 -->
+            <a href="{% url 'previewPortfolio' 'template1' %}" class="template-card">
+                <div class="template-preview">
+                    <i class="fa-solid fa-square-poll-horizontal"></i>
+                </div>
+                <div class="template-info">
+                    <h3 class="template-title">Monochrome Minimal</h3>
+                    <p class="template-desc">A strict grayscale layout with blue accents. Sidebar profile, single-column details. Great for corporate roles.</p>
+                    <div class="preview-btn">Preview Template</div>
+                </div>
+            </a>
+
+            <!-- Template 2 -->
+            <a href="{% url 'previewPortfolio' 'template2' %}" class="template-card">
+                <div class="template-preview">
+                    <i class="fa-solid fa-palette"></i>
+                </div>
+                <div class="template-info">
+                    <h3 class="template-title">Bold Gradient</h3>
+                    <p class="template-desc">Vibrant background gradients on dark mode, Masonry grid for projects, scroll animations. Built for creatives.</p>
+                    <div class="preview-btn">Preview Template</div>
+                </div>
+            </a>
+
+            <!-- Template 3 -->
+            <a href="{% url 'previewPortfolio' 'template3' %}" class="template-card">
+                <div class="template-preview">
+                    <i class="fa-solid fa-terminal"></i>
+                </div>
+                <div class="template-info">
+                    <h3 class="template-title">Terminal/Dev</h3>
+                    <p class="template-desc">An interactive code editor / IDE environment. Navigation functions like a file explorer. Perfect for developers.</p>
+                    <div class="preview-btn">Preview Template</div>
+                </div>
+            </a>
+
+            <!-- Template 4 -->
+            <a href="{% url 'previewPortfolio' 'template4' %}" class="template-card">
+                <div class="template-preview">
+                    <i class="fa-solid fa-feather-pointed"></i>
+                </div>
+                <div class="template-info">
+                    <h3 class="template-title">Editorial Classic</h3>
+                    <p class="template-desc">A print-inspired magazine layout using serif typography, ivory backgrounds, and elegant maroon rules. For academics & executives.</p>
+                    <div class="preview-btn">Preview Template</div>
+                </div>
+            </a>
+
+            <!-- Template 5 -->
+            <a href="{% url 'previewPortfolio' 'template5' %}" class="template-card">
+                <div class="template-preview">
+                    <i class="fa-solid fa-glass-water"></i>
+                </div>
+                <div class="template-info">
+                    <h3 class="template-title">Futuristic Glassmorphism</h3>
+                    <p class="template-desc">Futuristic layout using blurred glowing elements behind translucent glass panels, floating navbar, and tech accents.</p>
+                    <div class="preview-btn">Preview Template</div>
+                </div>
+            </a>
+
+            <!-- Template 6 -->
+            <a href="{% url 'previewPortfolio' 'template6' %}" class="template-card">
+                <div class="template-preview">
+                    <i class="fa-solid fa-compass-drafting"></i>
+                </div>
+                <div class="template-info">
+                    <h3 class="template-title">Swiss Editorial</h3>
+                    <p class="template-desc">A premium grid-based Swiss design. High typography focus, off-white background, bold red highlights, and strict whitespace alignment.</p>
+                    <div class="preview-btn">Preview Template</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
