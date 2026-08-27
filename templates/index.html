@@ -40,8 +40,8 @@
                         <i class="fa-solid fa-chevron-down" id="dropdownChevron" style="font-size: 0.8rem; margin-left: 0.5rem; transition: var(--transition);"></i>
                     </button>
                     <div class="dropdown-menu glass-panel" id="userDropdownMenu">
-                        <a href="/upload_resume/" class="dropdown-item">
-                            <i class="fa-solid fa-address-card" style="color: var(--primary);"></i>
+                        <a href="/?show_dashboard=true" class="dropdown-item">
+                            <i class="fa-solid fa-gauge" style="color: var(--primary);"></i>
                             <span>My Portfolio</span>
                         </a>
                         <a href="/user_logout/" class="dropdown-item">
@@ -65,7 +65,91 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero / Dashboard Section -->
+    {% if user.is_authenticated and show_dashboard %}
+    <section class="hero" style="min-height: 80vh;">
+        <div class="container">
+            <div class="badge">
+                <i class="fa-solid fa-gauge"></i>
+                <span>User Dashboard</span>
+            </div>
+            <h1>Welcome back, <span class="gradient-text">{{ user.first_name|default:user.username }}</span></h1>
+            <p style="margin-bottom: 2rem;">Here is the status of your hosted portfolio and your account details.</p>
+
+            {% if portfolio %}
+            <div class="dashboard-grid">
+                <!-- Left: Hosted URL & Actions -->
+                <div class="dashboard-card glass-panel">
+                    <div class="card-header">
+                        <i class="fa-solid fa-circle-check text-success" style="color: #10B981; font-size: 1.5rem;"></i>
+                        <h3>Your Live Portfolio</h3>
+                    </div>
+                    {% if portfolio_url %}
+                    <p class="live-url-text">Hosted live on Vercel at:</p>
+                    <a href="{{ portfolio_url.url }}" target="_blank" class="live-link-box">
+                        <i class="fa-solid fa-globe"></i>
+                        <span>{{ portfolio_url.url }}</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square" style="margin-left: auto; font-size: 0.8rem;"></i>
+                    </a>
+                    {% else %}
+                    <p class="live-url-text" style="margin-bottom: 1.5rem;">Your portfolio details are saved, but it has not been deployed to Vercel yet.</p>
+                    <a href="{% url 'chooseTemplate' %}" class="btn btn-primary">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>Choose Theme & Deploy</span>
+                    </a>
+                    {% endif %}
+                    
+                    <div class="dashboard-actions" style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <a href="{% url 'uploadResume' %}" class="btn btn-secondary">
+                            <i class="fa-solid fa-address-card"></i>
+                            <span>Re-upload Resume</span>
+                        </a>
+                        <a href="{% url 'editDetails' %}" class="btn btn-secondary">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <span>Edit Details</span>
+                        </a>
+                        <a href="{% url 'chooseTemplate' %}" class="btn btn-secondary">
+                            <i class="fa-solid fa-palette"></i>
+                            <span>Change Theme</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right: Portfolio Metadata details -->
+                <div class="dashboard-card glass-panel">
+                    <div class="card-header">
+                        <i class="fa-solid fa-database" style="color: var(--cyan); font-size: 1.5rem;"></i>
+                        <h3>Portfolio Details</h3>
+                    </div>
+                    <ul class="details-list" style="list-style: none; padding: 0; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.8rem;">
+                        <li style="display: flex; justify-content: space-between;"><strong>Name:</strong> <span>{{ portfolio.name|default:"Not specified" }}</span></li>
+                        <li style="display: flex; justify-content: space-between;"><strong>Role:</strong> <span>{{ portfolio.role|default:"Not specified" }}</span></li>
+                        <li style="display: flex; justify-content: space-between;"><strong>Email:</strong> <span>{{ portfolio.email|default:"Not specified" }}</span></li>
+                        <li style="display: flex; justify-content: space-between;"><strong>Selected Theme:</strong> <span class="badge-theme">{{ portfolio.template_choice|default:"Default" }}</span></li>
+                        <li style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.8rem; margin-top: 0.5rem; display: flex; justify-content: space-between;">
+                            <span><strong>Projects:</strong> {{ portfolio.projects|length }}</span>
+                            <span><strong>Experiences:</strong> {{ portfolio.experience|length }}</span>
+                            <span><strong>Skills:</strong> {{ portfolio.skills|length }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            {% else %}
+            <div class="dashboard-card glass-panel" style="max-width: 600px; margin: 2rem auto; padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center;">
+                <i class="fa-solid fa-file-pdf" style="font-size: 3rem; color: var(--cyan); margin-bottom: 1.5rem;"></i>
+                <h3>No Portfolio Found</h3>
+                <p style="color: var(--text-muted); margin-bottom: 2rem; margin-top: 0.5rem;">
+                    You haven't uploaded a resume to generate your portfolio yet. Let's create one now in just seconds!
+                </p>
+                <a href="{% url 'uploadResume' %}" class="btn btn-primary">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>Generate Portfolio</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+    {% else %}
     <section class="hero">
         <div class="container">
             <div class="badge">
@@ -140,6 +224,7 @@
 
         </div>
     </section>
+    {% endif %}
 
     <!-- Features Section -->
     <section class="features" id="features">

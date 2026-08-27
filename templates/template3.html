@@ -43,6 +43,30 @@
             overflow: hidden;
         }
 
+        /* Custom Scrollbar for IDE components */
+        .file-list::-webkit-scrollbar,
+        .tab-header::-webkit-scrollbar,
+        .editor-body::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .file-list::-webkit-scrollbar-track,
+        .tab-header::-webkit-scrollbar-track,
+        .editor-body::-webkit-scrollbar-track {
+            background: var(--sidebar-bg);
+        }
+        .file-list::-webkit-scrollbar-thumb,
+        .tab-header::-webkit-scrollbar-thumb,
+        .editor-body::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+        .file-list::-webkit-scrollbar-thumb:hover,
+        .tab-header::-webkit-scrollbar-thumb:hover,
+        .editor-body::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-blue);
+        }
+
         /* Preview Bar */
         .preview-bar {
             background: #0F141C;
@@ -151,17 +175,19 @@
             cursor: pointer;
             transition: all 0.2s;
             color: var(--text-main);
+            border-left: 2px solid transparent;
         }
 
         .file-item:hover {
-            background-color: rgba(255, 255, 255, 0.02);
+            background-color: rgba(255, 255, 255, 0.03);
             color: var(--text-white);
+            border-left-color: var(--text-muted);
         }
 
         .file-item.active {
             background-color: var(--tab-active);
             color: var(--accent-blue);
-            border-left: 2px solid var(--accent-blue);
+            border-left-color: var(--accent-blue);
         }
 
         .file-item i {
@@ -298,6 +324,12 @@
             border-radius: 8px;
             padding: 1.5rem;
             margin: 1.5rem 0;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .code-block:hover {
+            border-color: rgba(97, 218, 251, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         .code-block h3 {
@@ -363,17 +395,78 @@
             flex-shrink: 0;
         }
 
+        /* Sidebar Toggle for Mobile */
+        .sidebar-toggle {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 100%;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            cursor: pointer;
+            color: var(--accent-blue);
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .sidebar-toggle:hover {
+            color: var(--text-white);
+            background-color: var(--tab-active);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
+            .sidebar-toggle {
+                display: flex;
+            }
             .sidebar {
-                width: 60px;
+                position: fixed;
+                top: 0;
+                bottom: 0;
+                left: -250px;
+                width: 250px;
+                z-index: 1001;
+                height: 100%;
+                transition: left 0.3s ease;
+                box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .sidebar-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .mobile-close-sidebar {
+                display: inline-block !important;
+                color: var(--text-muted);
+            }
+            .mobile-close-sidebar:hover {
+                color: var(--text-white);
             }
             .sidebar span {
-                display: none;
+                display: inline;
             }
             .file-item {
-                padding: 0.8rem;
-                justify-content: center;
+                padding: 0.8rem 1.2rem;
+                justify-content: flex-start;
+            }
+            .editor-body {
+                padding: 1rem;
+            }
+            .editor-content {
+                gap: 0.8rem;
+            }
+            .line-numbers {
+                font-size: 0.8rem;
+            }
+            .code-viewport {
+                font-size: 0.85rem;
+            }
+            .code-block {
+                padding: 1rem;
+                margin: 1rem 0;
             }
         }
     </style>
@@ -398,7 +491,10 @@
     <div class="ide-container">
         <!-- Explorer Sidebar -->
         <aside class="sidebar">
-            <div class="sidebar-header">Explorer</div>
+            <div class="sidebar-header">
+                <span>Explorer</span>
+                <i class="fa-solid fa-xmark mobile-close-sidebar" onclick="toggleSidebar()" style="display: none; cursor: pointer; font-size: 1.1rem;"></i>
+            </div>
             <ul class="file-list">
                 <li class="file-item active" onclick="switchTab('about')">
                     <i class="fa-brands fa-markdown icon-md"></i>
@@ -446,6 +542,9 @@
         <!-- Editor Area -->
         <section class="workspace">
             <div class="tab-header" id="tabHeader">
+                <div class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" title="Toggle Explorer">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
                 <div class="tab active" id="tab-about" onclick="switchTab('about')">about.md</div>
                 {% if portfolio.experience %}
                 <div class="tab" id="tab-experience" onclick="switchTab('experience')">experience.json</div>
@@ -691,10 +790,28 @@
                     item.classList.add('active');
                 }
             });
+
+            // Close sidebar on mobile after clicking
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebar.classList.remove('open');
+            }
+        }
+
+        // Toggle Sidebar Drawer for Mobile
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('open');
+            }
         }
 
         // Initialize lines
         generateLines();
     </script>
+    <!-- PortifyAI Watermark -->
+    <div style="position: fixed; bottom: 15px; left: 15px; background-color: rgba(17, 17, 17, 0.9); backdrop-filter: blur(4px); color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-family: 'Inter', sans-serif; z-index: 9999; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); pointer-events: none;">
+        <i class="fa-solid fa-bolt" style="color: #F59E0B;"></i> Created by PortifyAI
+    </div>
 </body>
 </html>

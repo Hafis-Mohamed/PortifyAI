@@ -3,8 +3,23 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
+from Portfolio.models import Portfolio, PortfolioURL
+
 def index(request):
-    return render(request, "index.html")
+    show_dashboard = request.GET.get("show_dashboard") == "true"
+    context = {"show_dashboard": show_dashboard}
+    if request.user.is_authenticated:
+        try:
+            context["portfolio"] = Portfolio.objects.get(user=request.user)
+        except Portfolio.DoesNotExist:
+            context["portfolio"] = None
+        
+        try:
+            context["portfolio_url"] = PortfolioURL.objects.get(user=request.user)
+        except PortfolioURL.DoesNotExist:
+            context["portfolio_url"] = None
+            
+    return render(request, "index.html", context)
 
 def userLogin(request):
     if request.method == "POST":
