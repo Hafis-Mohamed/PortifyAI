@@ -346,126 +346,715 @@ header.scrolled {
     margin-bottom: 4rem;
 }
 
-/* Mockup */
-.hero-mockup-wrapper {
-    max-width: 900px;
+/* Animation Container */
+.hero-animation-wrapper {
+    max-width: 1000px;
     margin: 0 auto;
     perspective: 1000px;
-}
-
-.hero-mockup {
-    background: var(--bg-surface);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    transform: rotateX(5deg) scale(0.95);
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.hero-mockup-wrapper:hover .hero-mockup {
-    transform: rotateX(0deg) scale(1);
-}
-
-.window-header {
-    background: rgba(0, 0, 0, 0.5);
-    padding: 0.75rem 1rem;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid var(--glass-border);
-}
-
-.window-dots {
-    display: flex;
-    gap: 6px;
-}
-
-.dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-}
-
-.dot-red { background: #ef4444; }
-.dot-yellow { background: #f59e0b; }
-.dot-green { background: #10b981; }
-
-.window-address {
-    flex: 1;
-    text-align: center;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
-    padding: 4px 0;
-    margin: 0 20px;
 }
 
 .window-content {
     display: flex;
     height: 400px;
+    position: relative;
+    overflow: visible;
+    background: transparent;
+    align-items: center;
+    justify-content: center;
 }
 
-.mock-sidebar {
-    width: 200px;
-    background: rgba(0, 0, 0, 0.2);
-    border-right: 1px solid var(--glass-border);
-    padding: 1.5rem;
-}
-
-.mock-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), var(--cyan));
-    margin-bottom: 1rem;
-}
-
-.mock-line-s { width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; margin-bottom: 8px; }
-.mock-line-xs { width: 60%; height: 8px; background: rgba(255, 255, 255, 0.05); border-radius: 4px; margin-bottom: 2rem; }
-.mock-line-l { width: 40%; height: 24px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; margin-bottom: 1rem; }
-.mock-line-m { width: 70%; height: 12px; background: rgba(255, 255, 255, 0.05); border-radius: 4px; margin-bottom: 2rem; }
-
-.mock-menu-item {
+/* Reusable Dots for Portfolio */
+.dot {
+    width: 10px;
     height: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
-    margin-bottom: 12px;
+    border-radius: 50%;
+}
+.dot-red { background: #ef4444; }
+.dot-yellow { background: #f59e0b; }
+.dot-green { background: #10b981; }
+
+/* Portfolio Browser Bar */
+.portfolio-browser-bar {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 0.4rem 0.6rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    width: 100%;
 }
 
-.mock-main {
+.browser-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.browser-url {
     flex: 1;
-    padding: 2rem;
+    text-align: center;
+    font-size: 0.5rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    padding: 2px 0;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.portfolio-content-area {
+    display: flex;
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* 3D Panel Containers */
+.mock-split-left {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+    z-index: 2;
+}
+
+.mock-split-right {
+    flex: 1.5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+    z-index: 2;
+}
+
+/* RESUME DOCUMENT */
+.split-resume {
+    width: 210px;
+    height: 280px;
+    background: #ffffff;
+    border-radius: 6px;
+    padding: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
     display: flex;
     flex-direction: column;
+    gap: 0.75rem;
+    transform: rotateY(18deg) rotateX(4deg);
+    transform-style: preserve-3d;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.mock-grid {
+.resume-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1.5px solid #f1f5f9;
+    padding-bottom: 0.5rem;
+}
+
+.resume-avatar-placeholder {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    transition: background-color 0.4s ease;
+}
+
+.resume-header-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.r-line {
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    transition: background-color 0.4s ease;
+}
+
+.r-line-title { width: 75%; height: 6px; background: #475569; }
+.r-line-subtitle { width: 45%; height: 4px; background: #94a3b8; }
+.r-line-sec-title { width: 40%; height: 5px; background: #64748b; margin-bottom: 3px; }
+.r-line-short { width: 65%; }
+
+.resume-section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px dashed transparent;
+    transition: all 0.4s ease;
+}
+
+/* FLOW CONNECTOR (MIDDLE) */
+.mock-split-flow {
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 3;
+}
+
+.flow-icon-wrapper {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--cyan));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.4);
+    font-size: 0.8rem;
+    z-index: 5;
+    animation: magicPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes magicPulse {
+    0% { transform: scale(1); box-shadow: 0 0 12px rgba(6, 182, 212, 0.4); }
+    50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(99, 102, 241, 0.7); }
+    100% { transform: scale(1); box-shadow: 0 0 12px rgba(6, 182, 212, 0.4); }
+}
+
+.flow-stream {
+    position: absolute;
+    left: -20px;
+    width: 100px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    pointer-events: none;
+}
+
+.stream-1 { top: 32%; transform: rotate(12deg); }
+.stream-2 { top: 50%; }
+.stream-3 { top: 68%; transform: rotate(-12deg); }
+
+.flow-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #ffffff;
+    top: -2px;
+    left: 0;
+    opacity: 0;
+}
+
+/* PORTFOLIO SITE PREVIEW */
+.split-portfolio {
+    width: 350px;
+    height: 280px;
+    background: #09090b;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transform: rotateY(-18deg) rotateX(4deg);
+    transform-style: preserve-3d;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.35;
+}
+
+.split-portfolio .mock-sidebar {
+    width: 100px;
+    background: rgba(0, 0, 0, 0.3);
+    border-right: 1px solid var(--glass-border);
+    padding: 0.75rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.4s ease;
+}
+
+.split-portfolio .mock-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.4s ease;
+}
+
+.split-portfolio .mock-avatar-wrapper {
+    position: relative;
+    width: 26px;
+    height: 26px;
+    margin-bottom: 0.4rem;
+}
+
+.split-portfolio .mock-avatar-glow {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--cyan));
+    filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.split-portfolio .mock-avatar {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    z-index: 2;
+    transition: all 0.4s ease;
+}
+
+.split-portfolio .mock-name-text {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    font-family: 'Outfit', sans-serif;
+    line-height: 1.1;
+    transition: color 0.4s ease;
+}
+
+.split-portfolio .mock-title-text {
+    font-size: 0.5rem;
+    color: rgba(255, 255, 255, 0.2);
+    margin-top: 1px;
+    transition: color 0.4s ease;
+}
+
+.split-portfolio .mock-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.split-portfolio .mock-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 0.55rem;
+    color: rgba(255, 255, 255, 0.2);
+    background: transparent;
+    transition: all 0.4s ease;
+}
+
+.split-portfolio .mock-menu-item.active {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-muted);
+}
+
+.split-portfolio .mock-main {
+    flex: 1;
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.split-portfolio .mock-hero {
+    text-align: left;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.4s ease;
+}
+
+.split-portfolio .portfolio-welcome-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 5px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 100px;
+    font-size: 0.45rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+    opacity: 0.5;
+    transition: all 0.4s ease;
+}
+
+.split-portfolio .portfolio-hero-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.3);
+    line-height: 1.1;
+    margin-bottom: 0.2rem;
+    transition: color 0.4s ease;
+}
+
+.split-portfolio .portfolio-hero-desc {
+    font-size: 0.55rem;
+    color: rgba(255, 255, 255, 0.15);
+    line-height: 1.3;
+    transition: color 0.4s ease;
+}
+
+.split-portfolio .mock-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    flex: 1;
+    gap: 0.6rem;
 }
 
-.mock-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius-sm);
-    padding: 1.5rem;
+.split-portfolio .mock-card {
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    padding: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.4s ease;
 }
 
-.mock-card-glow {
-    background: rgba(99, 102, 241, 0.1);
-    border-color: rgba(99, 102, 241, 0.3);
+.split-portfolio .mock-card-glow {
     position: relative;
     overflow: hidden;
 }
 
-.mock-card-glow::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.2), transparent 50%);
+.split-portfolio .card-icon-header {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 0.3rem;
+}
+
+.split-portfolio .card-icon-header i {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.2);
+    transition: color 0.4s ease;
+}
+
+.split-portfolio .card-tag {
+    font-size: 0.5rem;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.2);
+    font-weight: 600;
+    transition: color 0.4s ease;
+}
+
+.split-portfolio .card-project-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.3);
+    margin-bottom: 2px;
+    transition: color 0.4s ease;
+}
+
+.split-portfolio .card-project-desc {
+    font-size: 0.55rem;
+    color: rgba(255, 255, 255, 0.15);
+    line-height: 1.2;
+    margin-bottom: 0.4rem;
+    transition: color 0.4s ease;
+}
+
+.split-portfolio .card-tech-badges {
+    display: flex;
+    gap: 3px;
+    opacity: 0.3;
+    transition: opacity 0.4s ease;
+}
+
+.split-portfolio .tech-badge {
+    font-size: 0.5rem;
+    padding: 0px 3px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    color: var(--text-muted);
+}
+
+.split-portfolio .skills-showcase {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+}
+
+.split-portfolio .skill-pill {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(255, 255, 255, 0.01);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.5rem;
+    color: rgba(255, 255, 255, 0.15);
+    transition: all 0.4s ease;
+}
+
+.split-portfolio .skill-pill i {
+    font-size: 0.65rem;
+}
+
+
+/* --- ANIMATION STEP-BY-STEP STYLES --- */
+
+/* STEP 0: IDLE STATE */
+.window-content.active-step-idle .split-resume {
+    transform: rotateY(18deg) rotateX(4deg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.window-content.active-step-idle .split-portfolio {
+    opacity: 0.35;
+    transform: rotateY(-18deg) rotateX(4deg);
+}
+
+/* STEP 1: PROFILE FLOW */
+.window-content.active-step-profile .resume-profile-sec {
+    border-color: var(--cyan);
+    background: rgba(6, 182, 212, 0.05);
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.15);
+}
+
+.window-content.active-step-profile .resume-profile-sec .resume-avatar-placeholder {
+    background: var(--cyan);
+}
+
+.window-content.active-step-profile .resume-profile-sec .r-line {
+    background: #cbd5e1;
+}
+
+.window-content.active-step-profile .stream-1 .flow-particle {
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+    animation: flowParticleAnimation 1.5s infinite linear;
+}
+
+.window-content.active-step-profile .split-portfolio {
+    opacity: 0.55;
+    border-color: rgba(6, 182, 212, 0.2);
+}
+
+.window-content.active-step-profile .portfolio-profile-sec {
+    background: rgba(6, 182, 212, 0.08);
+}
+
+.window-content.active-step-profile .split-portfolio .mock-avatar-glow {
+    opacity: 0.6;
+}
+
+.window-content.active-step-profile .split-portfolio .mock-avatar {
+    border-color: var(--cyan);
+    background: rgba(6, 182, 212, 0.1);
+    color: var(--text-main);
+}
+
+.window-content.active-step-profile .split-portfolio .mock-name-text {
+    color: var(--text-main);
+}
+
+.window-content.active-step-profile .split-portfolio .mock-title-text {
+    color: var(--cyan);
+}
+
+.window-content.active-step-profile .split-portfolio .mock-menu-item.active {
+    background: rgba(6, 182, 212, 0.1);
+    color: var(--text-main);
+}
+
+/* STEP 2: PROJECTS & HERO FLOW */
+.window-content.active-step-projects .resume-proj-sec,
+.window-content.active-step-projects .resume-exp-sec {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.05);
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.15);
+}
+
+.window-content.active-step-projects .resume-proj-sec .r-line,
+.window-content.active-step-projects .resume-exp-sec .r-line {
+    background: #cbd5e1;
+}
+
+.window-content.active-step-projects .stream-2 .flow-particle {
+    background: var(--primary);
+    box-shadow: 0 0 8px var(--primary);
+    animation: flowParticleAnimation 1.5s infinite linear;
+}
+
+.window-content.active-step-projects .split-portfolio {
+    opacity: 0.75;
+    border-color: rgba(99, 102, 241, 0.2);
+}
+
+.window-content.active-step-projects .portfolio-hero-sec {
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.window-content.active-step-projects .portfolio-hero-sec .portfolio-hero-title {
+    color: var(--text-main);
+}
+
+.window-content.active-step-projects .portfolio-hero-sec .portfolio-hero-desc {
+    color: var(--text-muted);
+}
+
+.window-content.active-step-projects .portfolio-proj-sec {
+    border-color: rgba(6, 182, 212, 0.3);
+    background: rgba(6, 182, 212, 0.08);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
+}
+
+.window-content.active-step-projects .portfolio-proj-sec .card-project-title {
+    color: var(--text-main);
+}
+
+.window-content.active-step-projects .portfolio-proj-sec .card-icon-header i {
+    color: var(--cyan);
+}
+
+.window-content.active-step-projects .portfolio-proj-sec .card-tag {
+    color: var(--cyan);
+}
+
+.window-content.active-step-projects .portfolio-proj-sec .card-tech-badges {
+    opacity: 1;
+}
+
+/* STEP 3: SKILLS FLOW */
+.window-content.active-step-skills .resume-skills-sec {
+    border-color: var(--cyan);
+    background: rgba(6, 182, 212, 0.05);
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.15);
+}
+
+.window-content.active-step-skills .resume-skills-sec .r-line {
+    background: #cbd5e1;
+}
+
+.window-content.active-step-skills .stream-3 .flow-particle {
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+    animation: flowParticleAnimation 1.5s infinite linear;
+}
+
+.window-content.active-step-skills .split-portfolio {
+    opacity: 0.9;
+}
+
+.window-content.active-step-skills .portfolio-skills-sec {
+    border-color: rgba(99, 102, 241, 0.3);
+    background: rgba(99, 102, 241, 0.08);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.1);
+}
+
+.window-content.active-step-skills .portfolio-skills-sec .card-icon-header i {
+    color: var(--primary);
+}
+
+.window-content.active-step-skills .portfolio-skills-sec .card-tag {
+    color: var(--primary);
+}
+
+.window-content.active-step-skills .portfolio-skills-sec .skill-pill {
+    border-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* STEP 4: ACTIVE & COMPLETE STATE */
+.window-content.active-step-complete .split-resume {
+    transform: rotateY(22deg) rotateX(2deg) scale(0.95);
+    opacity: 0.6;
+}
+
+.window-content.active-step-complete .split-portfolio {
+    opacity: 1;
+    transform: rotateY(-10deg) rotateX(2deg) scale(1.02);
+    box-shadow: 0 15px 40px rgba(99, 102, 241, 0.25);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+/* Continuously animate particles in complete state */
+.window-content.active-step-complete .stream-1 .flow-particle {
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+    animation: flowParticleAnimation 2.2s infinite linear;
+}
+
+.window-content.active-step-complete .stream-2 .flow-particle {
+    background: var(--primary);
+    box-shadow: 0 0 8px var(--primary);
+    animation: flowParticleAnimation 1.8s infinite linear;
+}
+
+.window-content.active-step-complete .stream-3 .flow-particle {
+    background: var(--cyan);
+    box-shadow: 0 0 8px var(--cyan);
+    animation: flowParticleAnimation 2.5s infinite linear;
+}
+
+/* Turn on full colored theme details in complete state */
+.window-content.active-step-complete .portfolio-profile-sec,
+.window-content.active-step-complete .portfolio-hero-sec,
+.window-content.active-step-complete .portfolio-proj-sec,
+.window-content.active-step-complete .portfolio-skills-sec {
+    background: rgba(255, 255, 255, 0.02);
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+.window-content.active-step-complete .portfolio-proj-sec {
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    background: rgba(6, 182, 212, 0.02);
+}
+
+.window-content.active-step-complete .portfolio-skills-sec {
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(99, 102, 241, 0.02);
+}
+
+.window-content.active-step-complete .split-portfolio .mock-avatar-glow {
+    opacity: 0.7;
+}
+
+.window-content.active-step-complete .split-portfolio .mock-avatar {
+    border-color: var(--cyan);
+    color: var(--text-main);
+    background: rgba(6, 182, 212, 0.15);
+}
+
+.window-content.active-step-complete .split-portfolio .mock-name-text { color: var(--text-main); }
+.window-content.active-step-complete .split-portfolio .mock-title-text { color: var(--cyan); }
+.window-content.active-step-complete .split-portfolio .mock-menu-item.active { background: rgba(99, 102, 241, 0.15); color: var(--text-main); }
+
+.window-content.active-step-complete .split-portfolio .portfolio-hero-title { color: var(--text-main); }
+.window-content.active-step-complete .split-portfolio .portfolio-hero-desc { color: var(--text-muted); }
+.window-content.active-step-complete .split-portfolio .portfolio-welcome-tag {
+    opacity: 1;
+    background: rgba(6, 182, 212, 0.12);
+    color: var(--cyan);
+    border-color: rgba(6, 182, 212, 0.3);
+}
+
+.window-content.active-step-complete .split-portfolio .card-project-title { color: var(--text-main); }
+.window-content.active-step-complete .split-portfolio .card-icon-header i { color: var(--cyan); }
+.window-content.active-step-complete .split-portfolio .card-tag { color: var(--cyan); }
+.window-content.active-step-complete .split-portfolio .card-tech-badges { opacity: 1; }
+
+.window-content.active-step-complete .split-portfolio .portfolio-skills-sec .card-icon-header i { color: var(--primary); }
+.window-content.active-step-complete .split-portfolio .portfolio-skills-sec .card-tag { color: var(--primary); }
+.window-content.active-step-complete .split-portfolio .skill-pill { border-color: rgba(255, 255, 255, 0.1); color: var(--text-main); }
+
+/* FLOW PARTICLE KEYFRAMES */
+@keyframes flowParticleAnimation {
+    0% { left: 0%; opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
 }
 
 /* Features */

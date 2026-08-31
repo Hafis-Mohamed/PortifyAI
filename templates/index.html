@@ -173,48 +173,129 @@
                 </a>
             </div>
 
-            <!-- Dashboard Portfolio Mockup -->
-            <div class="hero-mockup-wrapper">
-                <div class="hero-mockup">
-                    <div class="window-header">
-                        <div class="window-dots">
-                            <span class="dot dot-red"></span>
-                            <span class="dot dot-yellow"></span>
-                            <span class="dot dot-green"></span>
+            <!-- Dashboard Portfolio Animation -->
+            <div class="hero-animation-wrapper">
+                <div class="window-content active-step-idle" id="animation-container">
+                    <!-- LEFT PANEL: RESUME -->
+                    <div class="mock-split-left">
+                        <div class="split-resume">
+                            <div class="resume-section resume-profile-sec">
+                                <div class="resume-header">
+                                    <div class="resume-avatar-placeholder"></div>
+                                    <div class="resume-header-text">
+                                        <div class="r-line r-line-title"></div>
+                                        <div class="r-line r-line-subtitle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="resume-section resume-exp-sec">
+                                <div class="r-line r-line-sec-title"></div>
+                                <div class="r-line"></div>
+                                <div class="r-line r-line-short"></div>
+                            </div>
+                            <div class="resume-section resume-proj-sec">
+                                <div class="r-line r-line-sec-title" style="width: 50%;"></div>
+                                <div class="r-line"></div>
+                                <div class="r-line r-line-short"></div>
+                            </div>
+                            <div class="resume-section resume-skills-sec">
+                                <div class="r-line r-line-sec-title" style="width: 30%;"></div>
+                                <div class="r-line" style="width: 90%;"></div>
+                            </div>
                         </div>
-                        <div class="window-address">yourname.portify.ai</div>
-                        <div></div>
                     </div>
-                    <div class="window-content">
-                        <!-- Sidebar -->
-                        <div class="mock-sidebar">
-                            <div class="mock-profile">
-                                <div class="mock-avatar"></div>
-                                <div class="mock-name-skeleton">
-                                    <div class="mock-line-s"></div>
-                                    <div class="mock-line-xs"></div>
-                                </div>
-                            </div>
-                            <div class="mock-menu">
-                                <div class="mock-menu-item" style="width: 70%;"></div>
-                                <div class="mock-menu-item" style="width: 50%;"></div>
-                                <div class="mock-menu-item" style="width: 60%;"></div>
-                            </div>
+
+                    <!-- MIDDLE: FLOW CONNECTOR -->
+                    <div class="mock-split-flow">
+                        <div class="flow-stream stream-1">
+                            <div class="flow-particle"></div>
                         </div>
-                        <!-- Main Panel -->
-                        <div class="mock-main">
-                            <div class="mock-hero">
-                                <div class="mock-line-l"></div>
-                                <div class="mock-line-m"></div>
-                            </div>
-                            <div class="mock-grid">
-                                <div class="mock-card mock-card-glow">
-                                    <div class="mock-line-s"></div>
-                                    <div class="mock-line-xs"></div>
+                        <div class="flow-stream stream-2">
+                            <div class="flow-particle"></div>
+                        </div>
+                        <div class="flow-stream stream-3">
+                            <div class="flow-particle"></div>
+                        </div>
+                        <div class="flow-icon-wrapper">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT PANEL: PORTFOLIO -->
+                    <div class="mock-split-right">
+                        <div class="mock-portfolio-view split-portfolio">
+                            <!-- Portfolio Browser Bar -->
+                            <div class="portfolio-browser-bar">
+                                <div class="browser-dots">
+                                    <span class="dot dot-red"></span>
+                                    <span class="dot dot-yellow"></span>
+                                    <span class="dot dot-green"></span>
                                 </div>
-                                <div class="mock-card">
-                                    <div class="mock-line-s"></div>
-                                    <div class="mock-line-xs"></div>
+                                <div class="browser-url">
+                                    <i class="fa-solid fa-lock" style="color: #10b981; font-size: 0.45rem; margin-right: 4px;"></i>
+                                    <span>yourname.portify.ai</span>
+                                </div>
+                                <div style="width: 24px;"></div>
+                            </div>
+                            <div class="portfolio-content-area">
+                                <!-- Sidebar -->
+                                <div class="mock-sidebar">
+                                    <div class="mock-profile portfolio-profile-sec">
+                                        <div class="mock-avatar-wrapper">
+                                            <div class="mock-avatar-glow"></div>
+                                            <div class="mock-avatar">
+                                                <i class="fa-solid fa-user-astronaut" style="color: var(--cyan);"></i>
+                                            </div>
+                                        </div>
+                                        <div class="mock-name-skeleton">
+                                            <div class="mock-name-text">Alex Rivera</div>
+                                            <div class="mock-title-text">Dev</div>
+                                        </div>
+                                    </div>
+                                    <div class="mock-menu">
+                                        <div class="mock-menu-item active">
+                                            <i class="fa-solid fa-house"></i>
+                                            <span>Home</span>
+                                        </div>
+                                        <div class="mock-menu-item">
+                                            <i class="fa-solid fa-folder-open"></i>
+                                            <span>Projects</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Main Panel -->
+                                <div class="mock-main">
+                                    <div class="mock-hero portfolio-hero-sec">
+                                        <div class="portfolio-welcome-tag">
+                                            <i class="fa-solid fa-sparkles" style="color: var(--cyan); margin-right: 4px;"></i>
+                                            <span>PORTFOLIO ACTIVE</span>
+                                        </div>
+                                        <h3 class="portfolio-hero-title">Alex Rivera</h3>
+                                        <p class="portfolio-hero-desc">Full stack engineer building robust, interactive web apps.</p>
+                                    </div>
+                                    <div class="mock-grid">
+                                        <div class="mock-card mock-card-glow portfolio-proj-sec">
+                                            <div class="card-icon-header">
+                                                <i class="fa-solid fa-rocket" style="color: var(--cyan);"></i>
+                                                <span class="card-tag">Project</span>
+                                            </div>
+                                            <h4 class="card-project-title">PortifyAI</h4>
+                                            <div class="card-tech-badges">
+                                                <span class="tech-badge">Python</span>
+                                                <span class="tech-badge">React</span>
+                                            </div>
+                                        </div>
+                                        <div class="mock-card portfolio-skills-sec">
+                                            <div class="card-icon-header">
+                                                <i class="fa-solid fa-sliders" style="color: var(--primary);"></i>
+                                                <span class="card-tag">Skills</span>
+                                            </div>
+                                            <div class="skills-showcase">
+                                                <div class="skill-pill"><i class="fa-brands fa-react" style="color: #61dafb;"></i> React</div>
+                                                <div class="skill-pill"><i class="fa-brands fa-python" style="color: #3776ab;"></i> Python</div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -384,7 +465,33 @@
             });
         }
 
-
+        // Resume to Portfolio morphing animation loop
+        const container = document.getElementById('animation-container');
+        if (container) {
+            let step = 0;
+            const steps = [
+                'window-content active-step-idle',
+                'window-content active-step-profile',
+                'window-content active-step-projects',
+                'window-content active-step-skills',
+                'window-content active-step-complete'
+            ];
+            
+            function nextStep() {
+                container.className = steps[step];
+                
+                let delay = 1800; // time in ms for intermediate steps
+                if (step === 4) {
+                    delay = 5000; // show complete state for 5 seconds
+                }
+                
+                step = (step + 1) % steps.length;
+                setTimeout(nextStep, delay);
+            }
+            
+            // Start the cycle
+            nextStep();
+        }
     </script>
 </body>
 </html>
