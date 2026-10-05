@@ -1,15 +1,19 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PortifyAI - Create Premium Portfolios in Seconds</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
     <!-- FontAwesome for beautiful dev icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Main Premium Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
+
 <body>
 
     <!-- Glowing Background Elements -->
@@ -25,10 +29,10 @@
         <div class="container">
             <div class="nav-wrapper">
                 <a href="#" class="logo">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    <span>PortifyAI</span>
+                    <img src="{% static 'images/logo.png' %}" alt="PortifyAI Logo" style="height: 45px; width: auto; object-fit: contain;">
                 </a>
                 <ul class="nav-links">
+                    <li><a href="#">Home</a></li>
                     <li><a href="#features">Features</a></li>
                     <li><a href="#steps">How It Works</a></li>
                 </ul>
@@ -37,7 +41,8 @@
                     <button type="button" class="btn btn-secondary dropdown-trigger" id="userDropdownTrigger">
                         <i class="fa-solid fa-user" style="color: var(--cyan);"></i>
                         <span>{{ user.first_name|default:user.username }}</span>
-                        <i class="fa-solid fa-chevron-down" id="dropdownChevron" style="font-size: 0.8rem; margin-left: 0.5rem; transition: var(--transition);"></i>
+                        <i class="fa-solid fa-chevron-down" id="dropdownChevron"
+                            style="font-size: 0.8rem; margin-left: 0.5rem; transition: var(--transition);"></i>
                     </button>
                     <div class="dropdown-menu glass-panel" id="userDropdownMenu">
                         <a href="/?show_dashboard=true" class="dropdown-item">
@@ -89,16 +94,18 @@
                     <a href="{{ portfolio_url.url }}" target="_blank" class="live-link-box">
                         <i class="fa-solid fa-globe"></i>
                         <span>{{ portfolio_url.url }}</span>
-                        <i class="fa-solid fa-arrow-up-right-from-square" style="margin-left: auto; font-size: 0.8rem;"></i>
+                        <i class="fa-solid fa-arrow-up-right-from-square"
+                            style="margin-left: auto; font-size: 0.8rem;"></i>
                     </a>
                     {% else %}
-                    <p class="live-url-text" style="margin-bottom: 1.5rem;">Your portfolio details are saved, but it has not been deployed to Vercel yet.</p>
+                    <p class="live-url-text" style="margin-bottom: 1.5rem;">Your portfolio details are saved, but it has
+                        not been deployed to Vercel yet.</p>
                     <a href="{% url 'chooseTemplate' %}" class="btn btn-primary">
                         <i class="fa-solid fa-cloud-arrow-up"></i>
                         <span>Choose Theme & Deploy</span>
                     </a>
                     {% endif %}
-                    
+
                     <div class="dashboard-actions" style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
                         <a href="{% url 'uploadResume' %}" class="btn btn-secondary">
                             <i class="fa-solid fa-address-card"></i>
@@ -125,8 +132,10 @@
                         <li style="display: flex; justify-content: space-between;"><strong>Name:</strong> <span>{{ portfolio.name|default:"Not specified" }}</span></li>
                         <li style="display: flex; justify-content: space-between;"><strong>Role:</strong> <span>{{ portfolio.role|default:"Not specified" }}</span></li>
                         <li style="display: flex; justify-content: space-between;"><strong>Email:</strong> <span>{{ portfolio.email|default:"Not specified" }}</span></li>
-                        <li style="display: flex; justify-content: space-between;"><strong>Selected Theme:</strong> <span class="badge-theme">{{ portfolio.template_choice|default:"Default" }}</span></li>
-                        <li style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.8rem; margin-top: 0.5rem; display: flex; justify-content: space-between;">
+                        <li style="display: flex; justify-content: space-between;"><strong>Selected Theme:</strong>
+                            <span class="badge-theme">{{ portfolio.template_choice|default:"Default" }}</span></li>
+                        <li
+                            style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 0.8rem; margin-top: 0.5rem; display: flex; justify-content: space-between;">
                             <span><strong>Projects:</strong> {{ portfolio.projects|length }}</span>
                             <span><strong>Experiences:</strong> {{ portfolio.experience|length }}</span>
                             <span><strong>Skills:</strong> {{ portfolio.skills|length }}</span>
@@ -135,7 +144,8 @@
                 </div>
             </div>
             {% else %}
-            <div class="dashboard-card glass-panel" style="max-width: 600px; margin: 2rem auto; padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center;">
+            <div class="dashboard-card glass-panel"
+                style="max-width: 600px; margin: 2rem auto; padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center;">
                 <i class="fa-solid fa-file-pdf" style="font-size: 3rem; color: var(--cyan); margin-bottom: 1.5rem;"></i>
                 <h3>No Portfolio Found</h3>
                 <p style="color: var(--text-muted); margin-bottom: 2rem; margin-top: 0.5rem;">
@@ -161,7 +171,8 @@
                 <span class="accent-gradient-text">Let AI Do the Rest.</span>
             </h1>
             <p>
-                Upload your resume and watch the magic happen. Our AI generates a premium, responsive, and SEO-optimized portfolio tailor-made for your profile.
+                Upload your resume and watch the magic happen. Our AI generates a premium, responsive, and SEO-optimized
+                portfolio tailor-made for your profile.
             </p>
             <div class="hero-ctas">
                 <a href="/upload_resume/" class="btn btn-primary">
@@ -232,7 +243,8 @@
                                     <span class="dot dot-green"></span>
                                 </div>
                                 <div class="browser-url">
-                                    <i class="fa-solid fa-lock" style="color: #10b981; font-size: 0.45rem; margin-right: 4px;"></i>
+                                    <i class="fa-solid fa-lock"
+                                        style="color: #10b981; font-size: 0.45rem; margin-right: 4px;"></i>
                                     <span>yourname.portify.ai</span>
                                 </div>
                                 <div style="width: 24px;"></div>
@@ -267,11 +279,13 @@
                                 <div class="mock-main">
                                     <div class="mock-hero portfolio-hero-sec">
                                         <div class="portfolio-welcome-tag">
-                                            <i class="fa-solid fa-sparkles" style="color: var(--cyan); margin-right: 4px;"></i>
+                                            <i class="fa-solid fa-sparkles"
+                                                style="color: var(--cyan); margin-right: 4px;"></i>
                                             <span>PORTFOLIO ACTIVE</span>
                                         </div>
                                         <h3 class="portfolio-hero-title">Alex Rivera</h3>
-                                        <p class="portfolio-hero-desc">Full stack engineer building robust, interactive web apps.</p>
+                                        <p class="portfolio-hero-desc">Full stack engineer building robust, interactive
+                                            web apps.</p>
                                     </div>
                                     <div class="mock-grid">
                                         <div class="mock-card mock-card-glow portfolio-proj-sec">
@@ -291,8 +305,10 @@
                                                 <span class="card-tag">Skills</span>
                                             </div>
                                             <div class="skills-showcase">
-                                                <div class="skill-pill"><i class="fa-brands fa-react" style="color: #61dafb;"></i> React</div>
-                                                <div class="skill-pill"><i class="fa-brands fa-python" style="color: #3776ab;"></i> Python</div>
+                                                <div class="skill-pill"><i class="fa-brands fa-react"
+                                                        style="color: #61dafb;"></i> React</div>
+                                                <div class="skill-pill"><i class="fa-brands fa-python"
+                                                        style="color: #3776ab;"></i> Python</div>
                                             </div>
                                         </div>
                                     </div>
@@ -312,7 +328,8 @@
         <div class="container">
             <div class="section-header">
                 <h2>Designed for Developers</h2>
-                <p>Everything you need to showcase your developer skills, projects, and work history in a premium package.</p>
+                <p>Everything you need to showcase your developer skills, projects, and work history in a premium
+                    package.</p>
             </div>
             <div class="features-grid">
                 <!-- Card 1 -->
@@ -321,7 +338,8 @@
                         <i class="fa-solid fa-file-lines"></i>
                     </div>
                     <h3>Smart Resume Parser</h3>
-                    <p>Upload your PDF or Word resume. PortifyAI instantly extracts your experience, skills, education, and projects.</p>
+                    <p>Upload your PDF or Word resume. PortifyAI instantly extracts your experience, skills, education,
+                        and projects.</p>
                 </div>
                 <!-- Card 2 -->
                 <div class="feature-card glass-panel">
@@ -329,7 +347,8 @@
                         <i class="fa-solid fa-microchip"></i>
                     </div>
                     <h3>AI Tailored Sections</h3>
-                    <p>Our AI reads your profile to write compelling project summaries, match relevant skills, and format work history.</p>
+                    <p>Our AI reads your profile to write compelling project summaries, match relevant skills, and
+                        format work history.</p>
                 </div>
                 <!-- Card 3 -->
                 <div class="feature-card glass-panel">
@@ -337,7 +356,8 @@
                         <i class="fa-solid fa-palette"></i>
                     </div>
                     <h3>Developer-First Themes</h3>
-                    <p>Swap between beautiful themes built specifically for developers: terminal styles, minimalist cards, and dark gradients.</p>
+                    <p>Swap between beautiful themes built specifically for developers: terminal styles, minimalist
+                        cards, and dark gradients.</p>
                 </div>
                 <!-- Card 4 -->
                 <div class="feature-card glass-panel">
@@ -345,7 +365,8 @@
                         <i class="fa-solid fa-gauge-high"></i>
                     </div>
                     <h3>Ultra Fast Performance</h3>
-                    <p>Perfect Lighthouse scores with static rendering and optimized media delivery. Impress recruiters instantly.</p>
+                    <p>Perfect Lighthouse scores with static rendering and optimized media delivery. Impress recruiters
+                        instantly.</p>
                 </div>
                 <!-- Card 5 -->
                 <div class="feature-card glass-panel">
@@ -353,7 +374,8 @@
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
                     <h3>SEO & OpenGraph</h3>
-                    <p>Built-in SEO tags and automatically generated social preview cards for Slack, LinkedIn, and Twitter shares.</p>
+                    <p>Built-in SEO tags and automatically generated social preview cards for Slack, LinkedIn, and
+                        Twitter shares.</p>
                 </div>
                 <!-- Card 6 -->
                 <div class="feature-card glass-panel">
@@ -361,7 +383,8 @@
                         <i class="fa-solid fa-chart-line"></i>
                     </div>
                     <h3>Visitor Analytics</h3>
-                    <p>Keep track of profile views, project clicks, and resume downloads with a clean, privacy-friendly analytics panel.</p>
+                    <p>Keep track of profile views, project clicks, and resume downloads with a clean, privacy-friendly
+                        analytics panel.</p>
                 </div>
             </div>
         </div>
@@ -402,8 +425,7 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="#" class="logo">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        <span>PortifyAI</span>
+                        <img src="{% static 'images/logo.png' %}" alt="PortifyAI Logo" style="height: 45px; width: auto; object-fit: contain;">
                     </a>
                     <p>Creating professional portfolios for developers instantly with AI-powered generators.</p>
                 </div>
@@ -417,7 +439,8 @@
                 <div class="footer-links">
                     <h4>Community</h4>
                     <ul>
-                        <li><a href="https://github.com/Hafis-Mohamed/PortifyAI"><i class="fa-brands fa-github"></i> GitHub</a></li>
+                        <li><a href="https://github.com/Hafis-Mohamed/PortifyAI"><i class="fa-brands fa-github"></i>
+                                GitHub</a></li>
                         <li><a href="https://twitter.com"><i class="fa-brands fa-x-twitter"></i> Twitter</a></li>
                     </ul>
                 </div>
@@ -476,22 +499,23 @@
                 'window-content active-step-skills',
                 'window-content active-step-complete'
             ];
-            
+
             function nextStep() {
                 container.className = steps[step];
-                
+
                 let delay = 1800; // time in ms for intermediate steps
                 if (step === 4) {
                     delay = 5000; // show complete state for 5 seconds
                 }
-                
+
                 step = (step + 1) % steps.length;
                 setTimeout(nextStep, delay);
             }
-            
+
             // Start the cycle
             nextStep();
         }
     </script>
 </body>
+
 </html>

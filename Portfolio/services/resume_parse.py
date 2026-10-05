@@ -1,8 +1,11 @@
 # pyrefly: ignore [missing-import]
 import re, spacy, string
-from pyresparser import ResumeParser
 
 nlp=spacy.load("en_core_web_sm")
+
+def clean_heading(line):
+    cleaned = line.encode('ascii', 'ignore').decode('ascii')
+    return cleaned.lower().strip(string.punctuation + " \t")
 
 #EXTRACT EMAIL FROM THE RESUME
 def extractEmail(text):
@@ -22,7 +25,7 @@ def extractPhone(text):
 
 #EXTRACT LINKEDIN LINK FROM THE RESUME
 def extractLinkedIn(text):
-    pattern = r'https?://(?:www\.)?linkedin\.com/\S+'
+    pattern = r'(?:https?://)?(?:www\.)?linkedin\.com/\S+'
     match=re.search(pattern,text)
     if match:
         return match.group()
@@ -30,7 +33,7 @@ def extractLinkedIn(text):
 
 #EXTRACT GITHUB LINK FROM THE RESUME
 def extractGithub(text):
-    pattern = r'https?://(?:www\.)?github\.com/\S+'
+    pattern = r'(?:https?://)?(?:www\.)?github\.com/\S+'
     match=re.search(pattern,text)
     if match:
         return match.group()
@@ -38,44 +41,23 @@ def extractGithub(text):
 
 #EXTRACT NAME FROM THE RESUME
 def extractName(text):
-    # Try using spaCy to extract a PERSON entity from the beginning of the resume
-    doc = nlp(text[:1000])
-    for ent in doc.ents:
-        if ent.label_ == "PERSON":
-            clean_name = re.sub(r'\s+', ' ', ent.text).strip()
-            # Assume a name has 2 to 4 parts
-            if 1 < len(clean_name.split()) <= 4:
-                # Basic check to avoid picking up random words that spaCy misclassifies
-                if clean_name.replace(".", "").replace("-", "").replace(" ", "").isalpha():
-                    return clean_name
-
-    # Fallback heuristic if spaCy misses it
+    # 1. Fallback heuristic (often more accurate because name is at the top)
     lines = text.split("\n")
-    # Check only the first 10 lines
     for line in lines[:10]:
         line = line.strip()
         if not line:
             continue
-        # Skip common false positives
         if "resume" in line.lower() or "cv" in line.lower() or "curriculum vitae" in line.lower():
             continue
-        # Skip emails
-        if "@" in line:
+        if "@" in line or "http" in line.lower() or "www" in line.lower():
             continue
-        # Skip URLs
-        if "http" in line.lower() or "www" in line.lower():
-            continue
-        # Skip LinkedIn/GitHub
         if "linkedin" in line.lower() or "github" in line.lower():
             continue
-        # Skip lines containing numbers
         if re.search(r"\d", line):
             continue
-        # Remove extra spaces
+        
         words = line.split()
-        # Name should usually contain 2-4 words
-        if 2 <= len(words) <= 4:
-            # Check every word contains only alphabets
+        if 1 < len(words) <= 4:
             valid = True
             for word in words:
                 if not word.replace(".", "").replace("-", "").isalpha():
@@ -83,6 +65,16 @@ def extractName(text):
                     break
             if valid:
                 return line
+
+    # 2. Try using spaCy if heuristic misses it
+    doc = nlp(text[:1000])
+    for ent in doc.ents:
+        if ent.label_ == "PERSON":
+            clean_name = re.sub(r'\s+', ' ', ent.text).strip()
+            if 1 < len(clean_name.split()) <= 4:
+                if clean_name.replace(".", "").replace("-", "").replace(" ", "").isalpha():
+                    return clean_name
+                    
     return None
 
 #EXTRACT PROFESSIONAL ROLE FROM THE RESUME
@@ -121,9 +113,16 @@ def extractLocation(text):
     lines = text.split("\n")
     for line in lines[:15]:
         line = line.strip()
-        # skip emails/links which might contain weird characters parsed as GPE
-        if "@" in line or "http" in line:
+        
+        # Remove emails and urls from line before checking
+        line = re.sub(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}', '', line)
+        line = re.sub(r'(?:https?://)?(?:www\.)?[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/\S+', '', line)
+        # Remove phone numbers
+        line = re.sub(r'\+?\d[\d\s\-]{8,}\d', '', line)
+        
+        if len(line.strip()) < 3:
             continue
+            
         doc = nlp(line)
         for ent in doc.ents:
             if ent.label_ in ["GPE", "LOC"]:
@@ -138,7 +137,7 @@ ALL_SECTION_HEADINGS = [
     "education", "academic qualification", "academic qualifications", "qualification", "qualifications", "education & qualifications",
     "projects", "personal projects", "academic projects", "key projects", "major projects", "software projects",
     "certifications", "certification", "licenses & certifications", "certificates", "courses & certifications",
-    "experience", "work experience", "professional experience", "employment history", "work history", "internship", "internships", "career history",
+    "experience", "work experience", "professional experience", "employment history", "work history", "internship", "internships", "career history", "roles & responsibilities", "roles and responsibilities", "responsibilities",
     "skills", "technical skills", "soft skills", "interpersonal skills", "professional skills", "key skills", "core competencies", "technologies", "expertise", "it skills",
     "languages", "spoken languages", "known languages",
     "interests", "hobbies", "hobbies & interests", "interests & hobbies", "extracurricular activities", "extracurriculars",
@@ -168,7 +167,7 @@ def extractEducation(text):
         if not line:
             continue
 
-        lower = line.lower().strip(string.punctuation + " \t")
+        lower = clean_heading(line)
         if any(h == lower for h in EDUCATION_HEADINGS):
             capture = True
             continue
@@ -203,7 +202,7 @@ def extractProjects(text):
         if not line:
             continue
 
-        lower = line.lower().strip(string.punctuation + " \t")
+        lower = clean_heading(line)
         if any(h == lower for h in PROJECTS_HEADINGS):
             capture = True
             continue
@@ -237,7 +236,7 @@ def extractCertifications(text):
         if not line:
             continue
 
-        lower = line.lower().strip(string.punctuation + " \t")
+        lower = clean_heading(line)
         if any(h == lower for h in CERTIFICATIONS_HEADINGS):
             capture = True
             continue
@@ -274,7 +273,7 @@ def extractExperience(text):
         if not line:
             continue
 
-        lower = line.lower().strip(string.punctuation + " \t")
+        lower = clean_heading(line)
         if any(h == lower for h in EXPERIENCE_HEADINGS):
             capture = True
             continue
@@ -311,7 +310,7 @@ def extractSkills(text):
         line = line.strip()
         if not line:
             continue
-        lower = line.lower().strip(string.punctuation + " \t")
+        lower = clean_heading(line)
         if any(h == lower for h in SKILLS_HEADINGS):
             capture = True
             continue
@@ -341,7 +340,7 @@ def extractLanguages(text):
         line = line.strip()
         if not line:
             continue
-        lower = line.lower().strip(string.punctuation + " \t")
+        lower = clean_heading(line)
         if any(h == lower for h in LANGUAGES_HEADINGS):
             capture = True
             continue
@@ -403,7 +402,7 @@ def extractInterests(text):
         line = line.strip()
         if not line:
             continue
-        lower = line.lower().strip(string.punctuation + " \t")
+        lower = clean_heading(line)
         if any(h == lower for h in INTERESTS_HEADINGS):
             capture = True
             continue
@@ -433,7 +432,7 @@ def extractAchievements(text):
     for line in lines:
         line = line.strip()
         if not line: continue
-        lower = line.lower().strip(string.punctuation + " \t")
+        lower = clean_heading(line)
         if any(h == lower for h in ACHIEVEMENTS_HEADINGS):
             capture = True
             continue
@@ -462,7 +461,7 @@ def extractSummary(text):
     for line in lines:
         line = line.strip()
         if not line: continue
-        lower = line.lower().strip(string.punctuation + " \t")
+        lower = clean_heading(line)
         if any(h == lower for h in SUMMARY_HEADINGS):
             capture = True
             continue
@@ -489,7 +488,7 @@ def extractPublications(text):
     for line in lines:
         line = line.strip()
         if not line: continue
-        lower = line.lower().strip(string.punctuation + " \t")
+        lower = clean_heading(line)
         if any(h == lower for h in PUBLICATIONS_HEADINGS):
             capture = True
             continue
@@ -508,7 +507,10 @@ VOLUNTEER_HEADINGS = [
     "volunteering",
     "community service",
     "social work",
-    "social causes"
+    "social causes",
+    "roles & responsibilities",
+    "roles and responsibilities",
+    "responsibilities"
 ]
 def extractVolunteer(text):
     lines = text.split("\n")
@@ -517,7 +519,7 @@ def extractVolunteer(text):
     for line in lines:
         line = line.strip()
         if not line: continue
-        lower = line.lower().strip(string.punctuation + " \t")
+        lower = clean_heading(line)
         if any(h == lower for h in VOLUNTEER_HEADINGS):
             capture = True
             continue

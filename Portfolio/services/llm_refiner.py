@@ -1,3 +1,4 @@
+# pyrefly: ignore [missing-import]
 import google.generativeai as genai
 import json
 
@@ -241,3 +242,45 @@ Return ONLY the JSON object.
         # If the AI messes up or fails, fallback to the raw data
         print(f"Gemini API Error: {e}")
         return raw_data_dict
+
+def verify_extracted_details(raw_data_dict, full_text):
+    """
+    Takes the raw extracted dictionary and the full parsed text, sends it to Gemini, 
+    and asks it to verify and correct the details without changing the data structure.
+    """
+    model = genai.GenerativeModel('gemini-3.6-flash')
+    
+    prompt = f"""
+You are an expert resume parser and data verification AI.
+
+I will provide you with raw data extracted from a user's resume, along with the full parsed text of the resume.
+Your task is to VERIFY the extracted information and CORRECT any mistakes or missing information based on the full text.
+
+IMPORTANT RULES:
+1. Do NOT invent, assume, or add information that is not present in the full text.
+2. The output MUST maintain the exact same JSON structure as the input (arrays of strings for sections like education, experience, etc.).
+3. Do NOT convert arrays of strings into arrays of objects with 'heading' and 'body'. Keep them as simple arrays of strings.
+4. Clean up any weird formatting, newline characters, or OCR errors.
+5. If a section was completely missed in the raw extraction but exists in the full text, add it to the appropriate array.
+
+==================================================
+FULL RESUME TEXT
+==================================================
+{full_text}
+
+==================================================
+RAW EXTRACTED DATA
+==================================================
+{json.dumps(raw_data_dict, ensure_ascii=False)}
+
+Return ONLY the corrected JSON object.
+"""
+    try:
+        response = model.generate_content(prompt)
+        response_text = response.text.replace('```json', '').replace('```', '')
+        verified_data = json.loads(response_text)
+        return verified_data
+    except Exception as e:
+        print(f"Gemini API Error during verification: {e}")
+        return raw_data_dict
+

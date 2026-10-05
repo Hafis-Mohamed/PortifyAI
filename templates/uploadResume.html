@@ -154,7 +154,7 @@
         <div class="upload-card glass-panel">
             <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
             <h1 class="upload-title">Upload Your Resume</h1>
-            <p class="upload-subtitle">Let PortifyAI do the heavy lifting. Upload your PDF resume to generate your stunning portfolio.</p>
+            <p class="upload-subtitle">Let PortifyAI do the heavy lifting. Upload your PDF or Word resume to generate your stunning portfolio.</p>
             
             {% if messages %}
             <div class="messages">
@@ -169,10 +169,10 @@
             <form action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="file-drop-area" id="dropArea">
-                    <i class="fa-solid fa-file-pdf file-drop-icon"></i>
+                    <i class="fa-solid fa-file-lines file-drop-icon"></i>
                     <p class="file-drop-text">Drag & Drop your resume here</p>
-                    <p class="file-drop-hint">or click to browse files (PDF only)</p>
-                    <input type="file" name="resume" id="resume" accept="application/pdf" required>
+                    <p class="file-drop-hint">or click to browse files (PDF, DOCX)</p>
+                    <input type="file" name="resume" id="resume" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
                     <div class="file-name-display" id="fileNameDisplay">
                         <i class="fa-solid fa-circle-check"></i> <span id="fileName"></span>
                     </div>

@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns=[
     path("fetching_details/",views.fetchingDetails,name="fetchingDetails"),
+    path("process_llm_extraction/",views.process_llm_extraction,name="process_llm_extraction"),
     path("upload_resume/",views.uploadResume,name="uploadResume"),
     path("edit_details/",views.editDetails,name="editDetails"),
     path("generating_portfolio/",views.generatingPortfolio,name="generatingPortfolio"),

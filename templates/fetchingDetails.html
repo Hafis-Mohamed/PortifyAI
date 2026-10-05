@@ -148,6 +148,15 @@
         const totalSteps = statuses.length;
         const timePerStep = 1200; // 1.2 seconds per step
         
+        let isAnimationDone = false;
+        let isLLMDone = false;
+        
+        function checkAndRedirect() {
+            if (isAnimationDone && isLLMDone) {
+                window.location.href = "{% url 'editDetails' %}";
+            }
+        }
+        
         function updateStatus() {
             if (step < totalSteps) {
                 statusEl.textContent = statuses[step];
@@ -156,15 +165,31 @@
                 step++;
                 setTimeout(updateStatus, timePerStep);
             } else {
-                // Done loading, redirect to dashboard or home
-                setTimeout(() => {
-                    window.location.href = "{% url 'editDetails' %}";
-                }, 500);
+                isAnimationDone = true;
+                if (!isLLMDone) {
+                    statusEl.textContent = "AI verifying extracted details...";
+                }
+                checkAndRedirect();
             }
         }
         
         // Start animation
         setTimeout(updateStatus, 500);
+
+        // Start background LLM extraction
+        fetch("{% url 'process_llm_extraction' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        }).then(response => {
+            isLLMDone = true;
+            checkAndRedirect();
+        }).catch(err => {
+            console.error("LLM Extraction failed:", err);
+            isLLMDone = true;
+            checkAndRedirect();
+        });
     </script>
 </body>
 </html>

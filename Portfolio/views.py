@@ -1,25 +1,27 @@
-from Portfolio.services.llm_refiner import refine_portfolio_data
+from Portfolio.services.llm_refiner import refine_portfolio_data, verify_extracted_details
 from django.shortcuts import render,redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 import zipfile
 import io
 from django.contrib import messages
-from django.contrib.auth.models import User
 from .models import Resume, Portfolio, PortfolioURL
 from .services.pdf_reader import extractText
 from .services.resume_parse import *
 from .services.vercel_deploy import deploy_to_vercel
-import os
-from dotenv import load_dotenv
-import google.generativeai as genai
-
-load_dotenv()
-api_key=os.getenv('GOOGLE_API_KEY')
-genai.configure(api_key=api_key)
 
 def fetchingDetails(request):
     return render(request, "fetchingDetails.html")
+
+def process_llm_extraction(request):
+    if request.method == "POST":
+        raw_details = request.session.get('extracted_details')
+        raw_text = request.session.get('raw_text')
+        if raw_details and raw_text:
+            verified_data = verify_extracted_details(raw_details, raw_text)
+            request.session['extracted_details'] = verified_data
+        return JsonResponse({"status": "success"})
+    return JsonResponse({"status": "error"}, status=400)
 
 def uploadResume(request):
     if not request.user.is_authenticated:
@@ -84,6 +86,7 @@ def uploadResume(request):
             "other_links": other_links
         }
         request.session['extracted_details'] = raw_details
+        request.session['raw_text'] = text
         return redirect("fetchingDetails")        
     return render(request,"uploadResume.html")
 
