@@ -1,0 +1,60 @@
+{% extends 'admin_panel/admin_base.html' %}
+
+{% block title %}Dashboard | PortifyAI Admin{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Dashboard Overview</h1>
+
+<div class="stats-grid">
+    <!-- Card 1 -->
+    <div class="glass-card">
+        <i class="fa-solid fa-users stat-icon"></i>
+        <div class="stat-title">Total Users</div>
+        <div class="stat-value">{{ total_users }}</div>
+    </div>
+    
+    <!-- Card 2 -->
+    <div class="glass-card">
+        <i class="fa-solid fa-file-pdf stat-icon" style="color: #ec4899;"></i>
+        <div class="stat-title">Resumes Parsed</div>
+        <div class="stat-value">{{ total_resumes }}</div>
+    </div>
+    
+    <!-- Card 3 -->
+    <div class="glass-card">
+        <i class="fa-solid fa-laptop-code stat-icon" style="color: #10b981;"></i>
+        <div class="stat-title">Active Portfolios</div>
+        <div class="stat-value">{{ total_portfolios }}</div>
+    </div>
+</div>
+
+<div class="glass-card">
+    <h2 style="margin-top: 0;">Recent Portfolios Created</h2>
+    <div class="table-container">
+        <table class="premium-table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Template</th>
+                    <th>Last Updated</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in recent_portfolios %}
+                <tr>
+                    <td>{{ p.user.username }}</td>
+                    <td>{{ p.template_choice|default:"Default"|title }}</td>
+                    <td>{{ p.updated_at|timesince }} ago</td>
+                    <td><span class="badge badge-success">Active</span></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 1rem;">No portfolios created yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

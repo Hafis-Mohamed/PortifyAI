@@ -52,3 +52,33 @@ def deploy_to_vercel(html_content: str, project_name: str) -> str:
         return f"https://{safe_project_name}.vercel.app"
     else:
         raise Exception(f"Failed to deploy to Vercel: {response.text}")
+
+def delete_from_vercel(project_name: str) -> bool:
+    """
+    Deletes the project from Vercel.
+    """
+    token = os.environ.get("VERCEL_API_TOKEN")
+    if not token:
+        return False
+        
+    safe_project_name = "".join([c if c.isalnum() else "-" for c in project_name]).lower().strip("-")
+    if not safe_project_name:
+        return False
+        
+    url = f"https://api.vercel.com/v9/projects/{safe_project_name}"
+    
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "User-Agent": "PortifyAI/1.0"
+    }
+    
+    try:
+        response = requests.delete(url, headers=headers, timeout=10)
+        if response.status_code in [200, 204, 404]: # 404 means it's already gone
+            return True
+        else:
+            print(f"Failed to delete Vercel project {safe_project_name}: {response.text}")
+            return False
+    except Exception as e:
+        print(f"Exception during Vercel deletion: {str(e)}")
+        return False

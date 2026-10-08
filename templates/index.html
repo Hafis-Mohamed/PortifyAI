@@ -49,6 +49,12 @@
                             <i class="fa-solid fa-gauge" style="color: var(--primary);"></i>
                             <span>My Portfolio</span>
                         </a>
+                        {% if user.is_staff or user.is_superuser %}
+                        <a href="{% url 'admin_panel:dashboard' %}" class="dropdown-item">
+                            <i class="fa-solid fa-user-shield" style="color: var(--primary);"></i>
+                            <span>Admin Dashboard</span>
+                        </a>
+                        {% endif %}
                         <a href="/user_logout/" class="dropdown-item">
                             <i class="fa-solid fa-right-from-bracket" style="color: var(--primary);"></i>
                             <span>Logout</span>

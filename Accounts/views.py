@@ -29,6 +29,9 @@ def userLogin(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            # Redirect admins to the custom admin panel
+            if user.is_staff or user.is_superuser:
+                return redirect("admin_panel:dashboard")
             return redirect("index") # Redirect to index after login
         else:
             messages.error(request, "Invalid username or password.")

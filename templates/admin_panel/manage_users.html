@@ -1,0 +1,67 @@
+{% extends 'admin_panel/admin_base.html' %}
+
+{% block title %}Manage Users | PortifyAI Admin{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <h1 class="page-title" style="margin: 0;">Manage Users</h1>
+    <button class="btn-glass" style="background: var(--primary); color: white; border: none;">
+        <i class="fa-solid fa-plus"></i> Add User
+    </button>
+</div>
+
+<div class="glass-card">
+    <div class="table-container">
+        <table class="premium-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>#{{ user.id }}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="user-avatar" style="width: 30px; height: 30px; font-size: 0.8rem;">
+                                {{ user.username|make_list|first|upper }}
+                            </div>
+                            {{ user.username }}
+                        </div>
+                    </td>
+                    <td>{{ user.email|default:"-" }}</td>
+                    <td>
+                        {% if user.is_superuser %}
+                            <span class="badge badge-warning">Admin</span>
+                        {% elif user.is_staff %}
+                            <span class="badge badge-success">Staff</span>
+                        {% else %}
+                            <span class="badge" style="background: rgba(255,255,255,0.1);">User</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ user.date_joined|date:"M d, Y" }}</td>
+                    <td style="display: flex; gap: 5px;">
+                        <form method="POST" action="{% url 'admin_panel:delete_user' user.id %}" onsubmit="return confirm('Are you sure you want to delete this user?');" style="margin:0;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-glass btn-danger"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                        No users found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PortifyAI Admin{% endblock %}</title>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Premium Admin CSS -->
+    <link rel="stylesheet" href="{{ '/static/css/admin_custom.css' }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header" style="display: flex; justify-content: center; align-items: center; padding: 1.5rem; border-bottom: 1px solid var(--border-glass);">
+            <a href="{% url 'admin_panel:dashboard' %}" style="display: flex; justify-content: center;">
+                <img src="{% static 'images/logo.png' %}" alt="PortifyAI Logo" style="max-height: 45px; max-width: 90%; object-fit: contain;">
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{% url 'admin_panel:dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i class="fa-solid fa-chart-line"></i> Dashboard
+            </a>
+            <a href="{% url 'admin_panel:manage_users' %}" class="nav-item {% if request.resolver_match.url_name == 'manage_users' %}active{% endif %}">
+                <i class="fa-solid fa-users"></i> Users
+            </a>
+            <a href="{% url 'admin_panel:manage_portfolios' %}" class="nav-item {% if request.resolver_match.url_name == 'manage_portfolios' %}active{% endif %}">
+                <i class="fa-solid fa-briefcase"></i> Portfolios
+            </a>
+            <a href="/" class="nav-item">
+                <i class="fa-solid fa-globe"></i> View Site
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <div class="header-search">
+                <input type="text" placeholder="Search anything...">
+            </div>
+            <div class="header-user">
+                <span>{{ request.user.username }}</span>
+                <div class="user-avatar">
+                    {{ request.user.username|make_list|first|upper }}
+                </div>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
