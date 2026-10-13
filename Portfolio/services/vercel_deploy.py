@@ -4,10 +4,13 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import json
 
-def deploy_to_vercel(html_content: str, project_name: str) -> str:
+def deploy_to_vercel(html_content: str, project_name: str, username: str = None, tracking_base: str = None) -> str:
     """
     Deploys the given HTML content to Vercel and returns the live URL.
+    `username` / `tracking_base` configure the injected visitor-analytics beacon.
     """
+    from Portfolio.services.analytics import build_tracking_snippet, get_tracking_base
+
     token = os.environ.get("VERCEL_API_TOKEN")
     if not token:
         raise Exception("Vercel API token not configured in .env")
@@ -16,6 +19,17 @@ def deploy_to_vercel(html_content: str, project_name: str) -> str:
     safe_project_name = "".join([c if c.isalnum() else "-" for c in project_name]).lower().strip("-")
     if not safe_project_name:
         safe_project_name = "portifyai-portfolio"
+
+    # Inject PortifyAI Visitor Analytics Beacon
+    username = username or safe_project_name.replace("portifyai-", "")
+    tracking_base = (tracking_base or get_tracking_base() or "http://127.0.0.1:8000").rstrip("/")
+    tracking_snippet = build_tracking_snippet(username, tracking_base)
+    if "</head>" in html_content:
+        html_content = html_content.replace("</head>", f"{tracking_snippet}\n</head>", 1)
+    elif "</body>" in html_content:
+        html_content = html_content.replace("</body>", f"{tracking_snippet}\n</body>", 1)
+    else:
+        html_content += tracking_snippet
 
     url = "https://api.vercel.com/v13/deployments"
     

@@ -8,7 +8,7 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom Premium Admin CSS -->
-    <link rel="stylesheet" href="{{ '/static/css/admin_custom.css' }}">
+    <link rel="stylesheet" href="{% static 'css/admin_custom.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -17,7 +17,7 @@
     <aside class="admin-sidebar">
         <div class="sidebar-header" style="display: flex; justify-content: center; align-items: center; padding: 1.5rem; border-bottom: 1px solid var(--border-glass);">
             <a href="{% url 'admin_panel:dashboard' %}" style="display: flex; justify-content: center;">
-                <img src="{% static 'images/logo.png' %}" alt="PortifyAI Logo" style="max-height: 45px; max-width: 90%; object-fit: contain;">
+                <img src="{% static 'images/logo.png' %}?v=2" alt="PortifyAI Logo" style="max-height: 45px; max-width: 90%; object-fit: contain;">
             </a>
         </div>
         <nav class="sidebar-nav">
@@ -51,6 +51,17 @@
         </header>
 
         <div class="content-wrapper">
+            {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fa-solid {% if 'success' in message.tags %}fa-circle-check{% elif 'error' in message.tags %}fa-circle-exclamation{% else %}fa-circle-info{% endif %}"></i>
+                    <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             {% block content %}
             {% endblock %}
         </div>

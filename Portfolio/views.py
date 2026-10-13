@@ -4,11 +4,15 @@ from django.http import HttpResponse, JsonResponse
 from django.template.loader import render_to_string
 import zipfile
 import io
+import hashlib
 from django.contrib import messages
-from .models import Resume, Portfolio, PortfolioURL
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_exempt
+from .models import Resume, Portfolio, PortfolioURL, PortfolioView
 from .services.pdf_reader import extractText
 from .services.resume_parse import *
 from .services.vercel_deploy import deploy_to_vercel
+from .services.analytics import record_visit, get_tracking_base, is_public_base
 
 def fetchingDetails(request):
     return render(request, "fetchingDetails.html")
@@ -220,7 +224,18 @@ def saveTemplateChoice(request):
                 project_name = f"portifyai-{request.user.username}"
                 
                 try:
-                    live_url = deploy_to_vercel(html_content, project_name)
+                    tracking_base = get_tracking_base(request)
+                    live_url = deploy_to_vercel(
+                        html_content,
+                        project_name,
+                        username=request.user.username,
+                        tracking_base=tracking_base,
+                    )
+                    if not is_public_base(tracking_base):
+                        print(
+                            f"[PortifyAI analytics] WARNING: tracking beacon points to {tracking_base}, "
+                            "which public visitors cannot reach. Set TRACKING_BASE_URL in .env."
+                        )
                     # Save the URL
                     portfolio_url, created = PortfolioURL.objects.get_or_create(user=request.user)
                     portfolio_url.url = live_url
@@ -269,4 +284,40 @@ def download_portfolio_zip(request, template_id):
     
     response = HttpResponse(zip_buffer, content_type="application/zip")
     response['Content-Disposition'] = f'attachment; filename={portfolio.name.replace(" ", "_")}_portfolio.zip'
+    return response
+
+@csrf_exempt
+@never_cache
+def track_visit(request, username):
+    """
+    Visitor tracking endpoint hit by the beacon injected into deployed portfolios.
+    Stores the visit in the local database (PortfolioView log + Portfolio counters).
+    Returns a 1x1 transparent GIF (and records the visit), or - with ?format=json -
+    returns the stored counts without recording anything.
+    """
+    is_stats_request = request.GET.get('format') == 'json'
+    portfolio = None
+    if not is_stats_request:
+        try:
+            portfolio = record_visit(request, username)
+        except Exception as e:
+            # Tracking must never break the visitor's page load.
+            print(f"[PortifyAI analytics] Failed to record visit for {username}: {e}")
+    if portfolio is None:
+        portfolio = Portfolio.objects.filter(user__username__iexact=username).first()
+
+    if is_stats_request:
+        response = JsonResponse({
+            "status": "success" if portfolio else "not_found",
+            "page_views": portfolio.view_count if portfolio else 0,
+            "unique_visitors": portfolio.unique_visitor_count if portfolio else 0,
+        })
+    else:
+        # Standard 1x1 transparent GIF beacon
+        transparent_gif = b'GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;'
+        response = HttpResponse(transparent_gif, content_type="image/gif")
+
+    response['Access-Control-Allow-Origin'] = '*'
+    response['Pragma'] = 'no-cache'
+    response['Expires'] = '0'
     return response

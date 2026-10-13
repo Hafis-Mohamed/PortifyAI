@@ -167,6 +167,17 @@
                 <h1 class="review-title">Review Your Details</h1>
                 <p class="review-subtitle">Our AI has successfully extracted your information. Please verify and edit any details below.</p>
             </div>
+
+            {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    <i class="fa-solid {% if 'success' in message.tags %}fa-circle-check{% elif 'error' in message.tags %}fa-circle-exclamation{% else %}fa-circle-info{% endif %}"></i>
+                    <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
             
             <form action="{% url 'editDetails' %}" method="POST">
                 {% csrf_token %}
@@ -336,7 +347,7 @@
                             {% for item in skills %}
                             <div class="dynamic-row" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="input-group" style="flex: 1;">
-                                    <textarea class="form-control" name="skills[]" rows="5" placeholder="Your skills...">{{ item }}</textarea>
+                                    <textarea class="form-control" name="skills[]" rows="2" placeholder="Your skills...">{{ item }}</textarea>
                                     <i class="fa-solid fa-code" style="top: 1.5rem; transform: none;"></i>
                                 </div>
                                 <button type="button" class="btn" style="background: rgba(255, 50, 50, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 50, 50, 0.3); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; height: fit-content; align-self: flex-start;" onclick="this.parentElement.remove()" title="Remove"><i class="fa-solid fa-trash"></i></button>
@@ -355,7 +366,7 @@
                             {% for item in interests %}
                             <div class="dynamic-row" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
                                 <div class="input-group" style="flex: 1;">
-                                    <textarea class="form-control" name="interests[]" rows="3" placeholder="Your interests and hobbies...">{{ item }}</textarea>
+                                    <textarea class="form-control" name="interests[]" rows="2" placeholder="Your interests and hobbies...">{{ item }}</textarea>
                                     <i class="fa-solid fa-heart" style="top: 1.5rem; transform: none;"></i>
                                 </div>
                                 <button type="button" class="btn" style="background: rgba(255, 50, 50, 0.2); color: #ff6b6b; border: 1px solid rgba(255, 50, 50, 0.3); padding: 0.5rem 1rem; border-radius: 12px; cursor: pointer; height: fit-content; align-self: flex-start;" onclick="this.parentElement.remove()" title="Remove"><i class="fa-solid fa-trash"></i></button>

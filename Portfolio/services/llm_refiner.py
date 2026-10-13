@@ -1,15 +1,147 @@
 # pyrefly: ignore [missing-import]
 import google.generativeai as genai
 import json
+import os
+import re
+import requests
+# pyrefly: ignore [missing-import]
+from dotenv import load_dotenv
+
+load_dotenv()
+
+def sanitize_portfolio_fields(data):
+    """
+    Cleans up dates that might have been mistakenly placed inside description paragraphs (body),
+    extracting them into the 'year' field and keeping 'body' as a clean narrative.
+    """
+    if not isinstance(data, dict):
+        return data
+
+    date_prefix_regex = re.compile(
+        r"^(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+)?\d{4}(?:\s*[\-–—to/]+\s*(?:(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+)?(?:\d{4}|Present|Current))?\s*\|\s*",
+        re.IGNORECASE
+    )
+
+    for field in ['projects', 'experience', 'education', 'certifications']:
+        items = data.get(field, [])
+        if isinstance(items, list):
+            cleaned_items = []
+            for item in items:
+                if isinstance(item, dict):
+                    body = item.get('body', '')
+                    if isinstance(body, str):
+                        match = date_prefix_regex.match(body.strip())
+                        if match:
+                            date_str = match.group(0).strip(" |–—-\t\r\n")
+                            clean_body = body.strip()[match.end():].strip()
+                            item['body'] = clean_body
+                            if not item.get('year') or item.get('year') == 'Recent':
+                                item['year'] = date_str
+                    cleaned_items.append(item)
+                else:
+                    cleaned_items.append(item)
+            data[field] = cleaned_items
+
+    return data
+
+def configure_gemini():
+    load_dotenv(override=True)
+    api_key = os.environ.get("GOOGLE_API_KEY")
+    if api_key:
+        api_key = api_key.strip().strip("'\"")
+        # transport='rest' ensures stable HTTPS communication instead of hanging gRPC sockets on Windows
+        genai.configure(api_key=api_key, transport='rest')
+
+def get_gemini_response(prompt):
+    configure_gemini()
+    # Verified active models for this API key and version
+    models_to_try = [
+        'gemini-3.8-flash',
+        'gemini-3.5-flash',
+        'gemini-3.5-flash-lite',
+        'models/gemini-3.8-flash',
+        'models/gemini-3.5-flash'
+    ]
+    last_err = None
+    for m in models_to_try:
+        try:
+            model = genai.GenerativeModel(m)
+            response = model.generate_content(prompt)
+            if response and response.text:
+                return response.text
+        except Exception as e:
+            print(f"Gemini model {m} attempt: {e}")
+            last_err = e
+            continue
+    raise last_err or Exception("All Gemini models failed to generate content.")
+
+def get_groq_response(prompt):
+    load_dotenv(override=True)
+    api_key = os.environ.get("GROQ_API_KEY")
+    if not api_key:
+        return None
+    api_key = api_key.strip().strip("'\"")
+    models = ['openai/gpt-oss-120b', 'qwen/qwen3.8-27b', 'openai/gpt-oss-20b']
+    for m in models:
+        try:
+            r = requests.post(
+                'https://api.groq.com/openai/v1/chat/completions',
+                headers={'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json'},
+                json={
+                    'model': m,
+                    'messages': [{'role': 'user', 'content': prompt}],
+                    'temperature': 0.2
+                },
+                timeout=25
+            )
+            if r.status_code == 200:
+                data = r.json()
+                content = data.get('choices', [{}])[0].get('message', {}).get('content')
+                if content:
+                    return content
+            else:
+                print(f"Groq model {m} attempt ({r.status_code}): {r.text[:100]}")
+        except Exception as e:
+            print(f"Groq model {m} exception: {e}")
+            continue
+    return None
+
+def get_ai_response(prompt):
+    """
+    First attempts Groq (ultra fast, high rate limits: 30 RPM).
+    Falls back cleanly to Google Gemini.
+    """
+    try:
+        groq_resp = get_groq_response(prompt)
+        if groq_resp:
+            return groq_resp
+    except Exception as e:
+        print(f"Groq attempt failed: {e}")
+    
+    return get_gemini_response(prompt)
+
+def parse_llm_json(response_text):
+    text = response_text.strip()
+    if text.startswith('```json'):
+        text = text[7:]
+    elif text.startswith('```'):
+        text = text[3:]
+    if text.endswith('```'):
+        text = text[:-3]
+    text = text.strip()
+    
+    start = text.find('{')
+    end = text.rfind('}')
+    if start != -1 and end != -1:
+        text = text[start:end+1]
+        
+    return json.loads(text)
 
 def refine_portfolio_data(raw_data_dict):
     """
-    Takes the raw extracted dictionary, sends it to Gemini 1.5 Flash, 
+    Takes the raw extracted dictionary, sends it to Gemini (3.5 / 3.8 / Flash), 
     and asks it to return a polished JSON version.
     """
-    # We use gemini-3.6-flash because it is extremely fast and cheap/free
-    model = genai.GenerativeModel('gemini-3.6-flash')
-    
     # We instruct the AI exactly how to behave
     prompt = f"""
 You are an expert resume parser, resume writer, and portfolio content structuring AI.
@@ -62,26 +194,30 @@ FIELD-SPECIFIC RULES
 
 EDUCATION:
 - Separate every distinct degree, diploma, school qualification, or academic qualification.
-- Each degree/qualification must be one array element.
-- Preserve institution names and dates.
+- 'heading': Degree and Institution (e.g. 'MCA — College of Engineering Trivandrum').
+- 'year': Academic timeframe (e.g. '2025 - 2027').
+- 'body': Relevant coursework, honors, or duration.
 - Make each entry concise and professional.
 
 EXPERIENCE:
 - Separate every distinct company/job/position into its own array element.
+- 'heading': Job Title and Company Name (e.g. 'Flutter Developer at Tech Solutions').
+- 'year': Employment duration (e.g. '2024 - Present' or 'Dec 2024 - Apr 2025').
+- 'body': Professional description of responsibilities and achievements.
+- STRICT PROHIBITION: NEVER prepend dates or timelines to the 'body' paragraph (NEVER write '2024 | ...').
 - Do NOT combine different jobs into one item.
-- Preserve company names, job titles, and employment dates.
-- Rewrite descriptions professionally and action-oriented.
-- If multiple responsibilities belong to the same job, keep them together within that job entry.
 
 PROJECTS:
 - Separate every distinct project into its own array element.
-- Preserve project names and technologies.
-- Rewrite descriptions professionally.
+- 'heading': Clean Project Title (e.g. 'Small Business Management System').
+- 'year': Project release year, month/year, or timeframe (e.g. '2026' or 'April 2026'). If no date found, set to ''.
+- 'body': Clear, professional description of the project features, backend, frontend, and impact.
+- STRICT PROHIBITION: NEVER include or prepend dates or timelines inside the 'body' paragraph (NEVER write 'April 2026 | Currently developing...'). The 'body' must begin immediately with the narrative description.
 - Do NOT merge multiple projects into one item.
 
 CERTIFICATIONS:
 - Each certification must be a separate array element.
-- Preserve certification name, issuing organization, and date if available.
+- Preserve certification name, issuing organization, and date in 'year' if available.
 
 SKILLS:
 - Keep individual skills as separate array elements.
@@ -177,14 +313,23 @@ The JSON MUST contain exactly these keys:
 }}
 
 For array fields ('education', 'experience', 'projects', 'certifications'):
-- Every distinct item MUST be an object containing a 'heading' and 'body'.
-- 'heading' should contain the title, company, or degree name.
-- 'body' should contain the description, dates, and details.
+- Every distinct item MUST be an object containing 'heading', 'year', and 'body'.
+- 'heading': Title, company, degree, or project name.
+- 'year': Date, year, or duration (e.g. '2026', 'April 2026', '2024 - Present'). NEVER put this into 'body'.
+- 'body': The description paragraph ONLY. Must NEVER contain date prefixes like 'April 2026 |'.
 - Example structure:
+  "projects": [
+      {{
+          "heading": "Small Business Management System",
+          "year": "2026",
+          "body": "Developing a Flutter application with Firebase backend to automate sales, expense tracking, and daily transactions. Features real-time synchronization and secure authentication."
+      }}
+  ],
   "experience": [
       {{
           "heading": "Software Engineer at Google",
-          "body": "Developed backend systems."
+          "year": "2024 - Present",
+          "body": "Architected cloud microservices to handle high-concurrency requests."
       }}
   ]
 
@@ -234,22 +379,19 @@ Return ONLY the JSON object.
     # Call the API and parse the response inside a try/except block
     # so we fallback safely if the API key is wrong or rate limited
     try:
-        response = model.generate_content(prompt)
-        response_text = response.text.replace('```json', '').replace('```', '')
-        polished_data = json.loads(response_text)
-        return polished_data
+        response_text = get_ai_response(prompt)
+        polished_data = parse_llm_json(response_text)
+        return sanitize_portfolio_fields(polished_data)
     except Exception as e:
         # If the AI messes up or fails, fallback to the raw data
-        print(f"Gemini API Error: {e}")
-        return raw_data_dict
+        print(f"AI API Error: {e}")
+        return sanitize_portfolio_fields(raw_data_dict)
 
 def verify_extracted_details(raw_data_dict, full_text):
     """
-    Takes the raw extracted dictionary and the full parsed text, sends it to Gemini, 
+    Takes the raw extracted dictionary and the full parsed text, sends it to Gemini (3.5 / 3.8 / Flash), 
     and asks it to verify and correct the details without changing the data structure.
     """
-    model = genai.GenerativeModel('gemini-3.6-flash')
-    
     prompt = f"""
 You are an expert resume parser and data verification AI.
 
@@ -276,11 +418,11 @@ RAW EXTRACTED DATA
 Return ONLY the corrected JSON object.
 """
     try:
-        response = model.generate_content(prompt)
-        response_text = response.text.replace('```json', '').replace('```', '')
-        verified_data = json.loads(response_text)
+        response_text = get_ai_response(prompt)
+        verified_data = parse_llm_json(response_text)
         return verified_data
     except Exception as e:
-        print(f"Gemini API Error during verification: {e}")
+        print(f"AI API Error during verification: {e}")
         return raw_data_dict
+
 

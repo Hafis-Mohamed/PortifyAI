@@ -129,6 +129,17 @@
                 <p>Join thousands of developers building premium portfolios.</p>
             </div>
 
+            {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>{{ message }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             <form action="" method="post">
                 {% csrf_token %}
 

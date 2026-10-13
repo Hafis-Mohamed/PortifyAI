@@ -38,6 +38,11 @@ class Portfolio(models.Model):
     # Template Selection
     template_choice = models.CharField(max_length=50, blank=True, null=True, default='template1')
     
+    # Visitor analytics counters (kept in sync by Portfolio.services.analytics.record_visit)
+    view_count = models.PositiveIntegerField(default=0)
+    unique_visitor_count = models.PositiveIntegerField(default=0)
+    last_viewed_at = models.DateTimeField(blank=True, null=True)
+    
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -50,3 +55,19 @@ class PortfolioURL(models.Model):
 
     def __str__(self):
         return f"Portfolio URL of {self.user.username}"
+
+
+class PortfolioView(models.Model):
+    portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, related_name='views')
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    user_agent = models.TextField(blank=True, null=True)
+    visitor_hash = models.CharField(max_length=64, blank=True, null=True, db_index=True)
+    referer = models.CharField(max_length=255, blank=True, null=True, default='Direct')
+    device_type = models.CharField(max_length=50, blank=True, null=True, default='Desktop')
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"View on {self.portfolio.user.username} at {self.created_at:%Y-%m-%d %H:%M}"

@@ -2,8 +2,10 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.models import User 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+from django.utils import timezone
 
-from Portfolio.models import Portfolio, PortfolioURL
+from Portfolio.models import Portfolio, PortfolioURL, PortfolioView
+from Portfolio.services.analytics import get_tracking_base, is_public_base
 
 def index(request):
     show_dashboard = request.GET.get("show_dashboard") == "true"
@@ -18,6 +20,27 @@ def index(request):
             context["portfolio_url"] = PortfolioURL.objects.get(user=request.user)
         except PortfolioURL.DoesNotExist:
             context["portfolio_url"] = None
+
+        if context["portfolio_url"] and context["portfolio"]:
+            portfolio = context["portfolio"]
+            # Counts are stored on the Portfolio row by the tracking endpoint
+            tracking_base = get_tracking_base(request)
+            context["analytics"] = {
+                "page_views": portfolio.view_count,
+                "unique_visitors": portfolio.unique_visitor_count,
+                "last_viewed_at": portfolio.last_viewed_at,
+                "views_today": PortfolioView.objects.filter(
+                    portfolio=portfolio,
+                    created_at__gte=timezone.localtime().replace(hour=0, minute=0, second=0, microsecond=0),
+                ).count(),
+                "status": "Active (Real-Time)",
+                "is_enabled": True,
+                "tracking_reachable": is_public_base(tracking_base),
+                "username": request.user.username,
+                "recent_views": PortfolioView.objects.filter(portfolio=portfolio)[:5]
+            }
+        else:
+            context["analytics"] = None
             
     return render(request, "index.html", context)
 

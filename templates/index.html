@@ -29,7 +29,7 @@
         <div class="container">
             <div class="nav-wrapper">
                 <a href="#" class="logo">
-                    <img src="{% static 'images/logo.png' %}" alt="PortifyAI Logo" style="height: 45px; width: auto; object-fit: contain;">
+                    <img src="{% static 'images/logo.png' %}?v=2" alt="PortifyAI Logo" style="height: 44px; width: auto; object-fit: contain;">
                 </a>
                 <ul class="nav-links">
                     <li><a href="#">Home</a></li>
@@ -149,6 +149,57 @@
                     </ul>
                 </div>
             </div>
+
+            <!-- Visitor Analytics Card -->
+            {% if portfolio and portfolio_url %}
+            <div class="dashboard-card glass-panel" style="margin-top: 2rem;">
+                <div class="card-header">
+                    <i class="fa-solid fa-chart-line" style="color: var(--cyan); font-size: 1.5rem;"></i>
+                    <h3 style="margin: 0;">Visitor Analytics</h3>
+                </div>
+
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem; margin-bottom: 1.5rem;">
+                    Real-time audience engagement and traffic metrics for your portfolio.
+                </p>
+
+                <div class="analytics-metrics-grid">
+                    <!-- Metric 1: Total Views -->
+                    <div class="metric-box">
+                        <div class="metric-top">
+                            <span class="metric-label">Profile Views</span>
+                            <i class="fa-solid fa-eye metric-icon"></i>
+                        </div>
+                        <div class="metric-value">{{ analytics.page_views|default:0 }}</div>
+                        <div class="metric-hint"><i class="fa-solid fa-arrow-trend-up" style="color: #10B981;"></i> Total page hits</div>
+                    </div>
+
+                    <!-- Metric 2: Unique Visitors -->
+                    <div class="metric-box">
+                        <div class="metric-top">
+                            <span class="metric-label">Unique Visitors</span>
+                            <i class="fa-solid fa-users metric-icon" style="color: var(--primary);"></i>
+                        </div>
+                        <div class="metric-value">{{ analytics.unique_visitors|default:0 }}</div>
+                        <div class="metric-hint"><i class="fa-solid fa-fingerprint" style="color: var(--primary);"></i> Individual visitors</div>
+                    </div>
+                </div>
+
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin: 1rem 0 0;">
+                    <i class="fa-solid fa-calendar-day"></i> {{ analytics.views_today|default:0 }} view{{ analytics.views_today|pluralize }} today
+                    &nbsp;&middot;&nbsp;
+                    <i class="fa-regular fa-clock"></i>
+                    {% if analytics.last_viewed_at %}Last visit {{ analytics.last_viewed_at|timesince }} ago{% else %}No visits yet{% endif %}
+                </p>
+
+                {% if analytics and not analytics.tracking_reachable %}
+                <p style="color: #fbbf24; font-size: 0.85rem; margin: 0.75rem 0 0;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Visitor tracking is pointing at a local address, so views from the internet can't be recorded.
+                    Set a public <code>TRACKING_BASE_URL</code> and redeploy.
+                </p>
+                {% endif %}
+            </div>
+            {% endif %}
             {% else %}
             <div class="dashboard-card glass-panel"
                 style="max-width: 600px; margin: 2rem auto; padding: 3rem; text-align: center; display: flex; flex-direction: column; align-items: center;">
@@ -168,16 +219,12 @@
     {% else %}
     <section class="hero">
         <div class="container">
-            <div class="badge">
-                <i class="fa-solid fa-bolt"></i>
-                <span>Now Powered by Gemini 3.5</span>
-            </div>
-            <h1>
-                <span class="gradient-text">Showcase Your Code.</span><br>
-                <span class="accent-gradient-text">Let AI Do the Rest.</span>
+            <h1 style="margin-top: 2.5rem;">
+                <span class="gradient-text">Your Next Opportunity.</span><br>
+                <span class="accent-gradient-text">Starts with a Great Portfolio.</span>
             </h1>
             <p>
-                Upload your resume and watch the magic happen. Our AI generates a premium, responsive, and SEO-optimized
+                Your work speaks. We make sure it's heard. Our AI generates a premium, responsive, and SEO-optimized
                 portfolio tailor-made for your profile.
             </p>
             <div class="hero-ctas">
@@ -431,7 +478,7 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="#" class="logo">
-                        <img src="{% static 'images/logo.png' %}" alt="PortifyAI Logo" style="height: 45px; width: auto; object-fit: contain;">
+                        <img src="{% static 'images/logo.png' %}?v=2" alt="PortifyAI Logo" style="height: 44px; width: auto; object-fit: contain;">
                     </a>
                     <p>Creating professional portfolios for developers instantly with AI-powered generators.</p>
                 </div>

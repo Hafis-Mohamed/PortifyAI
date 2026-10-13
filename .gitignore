@@ -1,6 +1,10 @@
 .env
 db.sqlite3
-*.pyc
+*.sqlite3
+*.py[cod]
 __pycache__/
 media/
 resumes/
+*.log
+.DS_Store
+Thumbs.db

@@ -157,10 +157,11 @@
             <p class="upload-subtitle">Let PortifyAI do the heavy lifting. Upload your PDF or Word resume to generate your stunning portfolio.</p>
             
             {% if messages %}
-            <div class="messages">
+            <div class="messages-container">
                 {% for message in messages %}
                 <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-                    {{ message }}
+                    <i class="fa-solid {% if 'success' in message.tags %}fa-circle-check{% elif 'error' in message.tags %}fa-circle-exclamation{% else %}fa-circle-info{% endif %}"></i>
+                    <span>{{ message }}</span>
                 </div>
                 {% endfor %}
             </div>

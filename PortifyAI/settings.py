@@ -30,7 +30,15 @@ SECRET_KEY = 'django-insecure-gq6r_tv3x)rbh^67d1a(a684fm)@o1o3-wzwa9nxs4j)6g)4%h
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+# Allow CSRF for development tunnels (localtunnel, cloudflare)
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.loca.lt',
+    'https://*.trycloudflare.com',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]
 
 
 # Application definition
@@ -137,5 +145,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Public URL of this Django server that deployed (Vercel) portfolios send visitor
+# beacons to, e.g. https://xyz.trycloudflare.com. Must be reachable from the internet;
+# http://127.0.0.1 only works on this machine.
+TRACKING_BASE_URL = os.environ.get('TRACKING_BASE_URL', '').rstrip('/')
 
 # Trigger reloader

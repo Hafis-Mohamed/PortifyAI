@@ -13,4 +13,6 @@ urlpatterns=[
     path("save_template/",views.saveTemplateChoice,name="saveTemplateChoice"),
     path("deployment_success/",views.deploymentSuccess,name="deploymentSuccess"),
     path("download_zip/<str:template_id>/",views.download_portfolio_zip,name="downloadPortfolioZip"),
+    path("track/<str:username>/",views.track_visit,name="trackVisit"),
+    path("portfolio/track/<str:username>/",views.track_visit,name="trackVisitAlias"),
 ]
